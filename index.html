@@ -1,50 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Viol Button</title>
-    <style>
-        #violButton {
-            font-size: 28px;
-            padding: 24px 48px;
-            background-color: #d32f2f;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-        #violButton:hover {
-            background-color: #b71c1c;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Buttons</title>
+<style>
+  body {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #121212;
+    font-family: Arial, sans-serif;
+  }
+  .container {
+    display: flex;
+    gap: 20px;
+  }
+  .btn {
+    width: 160px;
+    height: 50px;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    background-color: #0088cc;
+    box-shadow: 0 0 8px #00aaff, 0 0 20px #00aaff;
+    animation: glowBlue 2s ease-in-out infinite alternate;
+  }
+  @keyframes glowBlue {
+    from {
+      box-shadow: 0 0 8px #00aaff, 0 0 20px #00aaff;
+    }
+    to {
+      box-shadow: 0 0 20px #00ccff, 0 0 30px #00ccff;
+    }
+  }
+</style>
 </head>
 <body>
-
-<button id="violButton">VIOL</button>
-
-<script>
-    document.getElementById('violButton').addEventListener('click', () => {
-        const chat_id = prompt('Enter user chat_id:');
-        const username = prompt('Enter username (without @):');
-
-        if (!chat_id || !username) {
-            alert('Both chat_id and username are required!');
-            return;
-        }
-
-        fetch('/start_spam', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({chat_id: chat_id, username: username})
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'started') alert('Spam started!');
-            else if (data.status === 'already_running') alert('Spam is already running for this user.');
-            else alert('Error starting spam.');
-        })
-        .catch(() => alert('Network error.'));
-    });
-</script>
-
+  <div class="container">
+    <a href="https://t.me/lscs3" target="_blank" class="btn">my telegram</a>
+    <a href="https://t.me/p12cracking1" target="_blank" class="btn">my channel</a>
+    <button class="btn" style="opacity: 0.5; cursor: default;">Button 3</button>
+  </div>
 </body>
 </html>
