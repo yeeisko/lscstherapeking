@@ -1,81 +1,25 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>IPA Signer</title>
+    <meta charset="UTF-8" />
+    <title>IPA Signer</title>
 </head>
 <body>
-<h1>IPA Signer</h1>
-<form id="signForm">
-  <label>Input IPA file: <input type="file" id="ipaFile" accept=".ipa" required /></label><br /><br />
-  <label>.p12 certificate file: <input type="file" id="p12File" accept=".p12" required /></label><br /><br />
-  <label>.p12 Password: <input type="password" id="p12Password" required /></label><br /><br />
-  <label>Provisioning Profile (.mobileprovision): <input type="file" id="mobileprovisionFile" accept=".mobileprovision" required /></label><br /><br />
-  <label>Signing Identity:<input type="text" id="identityName" placeholder="Apple Development: Your Name (XXXXXX)" required /></label><br /><br />
-  <button type="submit">Sign IPA</button>
-</form>
+    <h1>IPA Signer</h1>
+    <form method="POST" action="/sign" enctype="multipart/form-data">
+        <label>P12 File (Certificate):</label><br/>
+        <input type="file" name="p12" accept=".p12" required/><br/><br/>
 
-<pre id="output"></pre>
+        <label>P12 Password:</label><br/>
+        <input type="password" name="p12pass" required/><br/><br/>
 
-<script>
-  // This frontend cannot run Python or interact with local macOS keychain/codesign directly.
-  // So here we'll send files and data to a backend (server) which must run the Python script.
+        <label>Mobile Provisioning Profile (.mobileprovision):</label><br/>
+        <input type="file" name="mobileprovision" accept=".mobileprovision" required/><br/><br/>
 
-  // Example: make a POST request to /sign endpoint with FormData
+        <label>IPA File to Sign:</label><br/>
+        <input type="file" name="ipa" accept=".ipa" required/><br/><br/>
 
-  document.getElementById('signForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const ipaFile = document.getElementById('ipaFile').files[0];
-    const p12File = document.getElementById('p12File').files[0];
-    const p12Password = document.getElementById('p12Password').value;
-    const mobileprovisionFile = document.getElementById('mobileprovisionFile').files[0];
-    const identityName = document.getElementById('identityName').value;
-
-    if (!ipaFile || !p12File || !p12Password || !mobileprovisionFile || !identityName) {
-      alert('Please fill all fields and upload all files.');
-      return;
-    }
-
-    const output = document.getElementById('output');
-    output.textContent = 'Signing in progress...';
-
-    try {
-      const formData = new FormData();
-      formData.append('ipa', ipaFile);
-      formData.append('p12', p12File);
-      formData.append('p12_password', p12Password);
-      formData.append('mobileprovision', mobileprovisionFile);
-      formData.append('identity', identityName);
-
-      const response = await fetch('/sign', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        output.textContent = 'Error: ' + errorText;
-        return;
-      }
-
-      // Expecting signed IPA as blob to download
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'signed.ipa';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-      output.textContent = 'Signing complete. Download started.';
-    } catch (err) {
-      output.textContent = 'Error: ' + err.message;
-    }
-  });
-</script>
+        <button type="submit">Sign IPA</button>
+    </form>
 </body>
-  </html>
+</html>
