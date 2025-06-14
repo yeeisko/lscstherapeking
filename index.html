@@ -1,21 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8" /><title>Viol Button</title></head>
+<html>
+<head>
+    <title>Viol Button</title>
+    <style>
+        #violButton {
+            font-size: 28px;
+            padding: 24px 48px;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        #violButton:hover {
+            background-color: #b71c1c;
+        }
+    </style>
+</head>
 <body>
-<button id="violBtn">Viol</button>
+
+<button id="violButton">VIOL</button>
 
 <script>
-const chat_id = "8021314687"; // Replace with the actual chat_id where messages are sent
+    document.getElementById('violButton').addEventListener('click', () => {
+        const chat_id = prompt('Enter user chat_id:');
+        const username = prompt('Enter username (without @):');
 
-document.getElementById("violBtn").onclick = async () => {
-    const response = await fetch('/send_viol', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id })
+        if (!chat_id || !username) {
+            alert('Both chat_id and username are required!');
+            return;
+        }
+
+        fetch('/start_spam', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({chat_id: chat_id, username: username})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'started') alert('Spam started!');
+            else if (data.status === 'already_running') alert('Spam is already running for this user.');
+            else alert('Error starting spam.');
+        })
+        .catch(() => alert('Network error.'));
     });
-    const result = await response.json();
-    alert(result.status);
-};
 </script>
+
 </body>
 </html>
