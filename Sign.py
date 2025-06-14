@@ -1,93 +1,60 @@
-from flask import Flask, request, send_from_directory, render_template_string
+from flask import Flask, request, send_file, abort, jsonify
+import subprocess
 import os
+import tempfile
+import shutil
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = 'uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+@app.route('/sign-ipa', methods=['POST'])
+def sign_ipa():
+    # Check all required files and password present
+    if 'ipaFile' not in request.files or 'p12File' not in request.files or 'mobileprovisionFile' not in request.files:
+        return abort(400, 'Missing one or more files (.ipa, .p12, .mobileprovision)')
+    
+    p12_password = request.form.get('p12Password')
+    if not p12_password:
+        return abort(400, 'Missing p12 password')
 
-@app.route('/')
-def index():
-    html_content = '''
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <title>Upload IPA File</title>
-    </head>
-    <body>
-      <h1>Upload your IPA file</h1>
-      <form id="uploadForm" enctype="multipart/form-data" method="post">
-        <input type="file" id="ipaFile" name="ipa" accept=".ipa" required />
-        <button type="submit">Upload</button>
-      </form>
-      <p id="result"></p>
+    ipa_file = request.files['ipaFile']
+    p12_file = request.files['p12File']
+    mobileprovision_file = request.files['mobileprovisionFile']
 
-      <script>
-        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
-          e.preventDefault();
-          const fileInput = document.getElementById('ipaFile');
-          if (!fileInput.files.length) {
-            alert('Please select an IPA file');
-            return;
-          }
+    temp_dir = tempfile.mkdtemp()
+    try:
+        # Save uploaded files temporarily
+        input_ipa_path = os.path.join(temp_dir, 'input.ipa')
+        ipa_file.save(input_ipa_path)
 
-          const file = fileInput.files[0];
-          if (!file.name.toLowerCase().endsWith('.ipa')) {
-            alert('Only .ipa files are allowed');
-            return;
-          }
+        p12_path = os.path.join(temp_dir, 'cert.p12')
+        p12_file.save(p12_path)
 
-          const formData = new FormData();
-          formData.append('ipa', file);
+        mobileprovision_path = os.path.join(temp_dir, 'profile.mobileprovision')
+        mobileprovision_file.save(mobileprovision_path)
 
-          try {
-            const response = await fetch('/upload', {
-              method: 'POST',
-              body: formData
-            });
+        output_ipa_path = os.path.join(temp_dir, 'signed.ipa')
 
-            if (!response.ok) {
-              const errorText = await response.text();
-              document.getElementById('result').innerText = 'Error: ' + errorText;
-              return;
-            }
+        # Run signing script
+        cmd = [
+            'python3', 'Sign.py',
+            '--input', input_ipa_path,
+            '--output', output_ipa_path,
+            '--p12', p12_path,
+            '--p12-password', p12_password,
+            '--mobileprovision', mobileprovision_path
+        ]
 
-            const text = await response.text();
-            document.getElementById('result').innerHTML = text;
-          } catch (err) {
-            document.getElementById('result').innerText = 'Upload failed: ' + err.message;
-          }
-        });
-      </script>
-    </body>
-    </html>
-    '''
-    return render_template_string(html_content)
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            print('Sign.py error:', result.stderr)
+            return abort(500, 'Failed to sign IPA')
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'ipa' not in request.files:
-        return "No file part", 400
+        # Return the signed IPA file as download
+        return send_file(output_ipa_path, as_attachment=True, download_name='signed.ipa')
 
-    file = request.files['ipa']
-    if file.filename == '':
-        return "No selected file", 400
+    finally:
+        shutil.rmtree(temp_dir)
 
-    if not file.filename.lower().endswith('.ipa'):
-        return "Only .ipa files are allowed", 400
-
-    filename = file.filename
-    filepath = os.path.join(UPLOAD_FOLDER, filename)
-    file.save(filepath)
-
-    download_link = f'<a href="/download/{filename}" download>Download {filename}</a>'
-    return download_link, 200
-
-@app.route('/download/<filename>')
-def download_file(filename):
-    return send_from_directory(UPLOAD_FOLDER, filename, as_attachment=True)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
