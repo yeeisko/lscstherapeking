@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>bhai chack</title>
-</head>
+<head><meta charset="UTF-8" /><title>Viol Button</title></head>
 <body>
-<p>i rape rajeet in the ass</p>
+<button id="violBtn">Viol</button>
+
+<script>
+const chat_id = "8021314687"; // Replace with the actual chat_id where messages are sent
+
+document.getElementById("violBtn").onclick = async () => {
+    const response = await fetch('/send_viol', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id })
+    });
+    const result = await response.json();
+    alert(result.status);
+};
+</script>
 </body>
 </html>
