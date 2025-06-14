@@ -1,11 +1,7 @@
-<!-- index.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Viol Rajeet</title>
-</head>
-<body>
-    viol rajeet
-</body>
-</html>
+<form id="signForm" enctype="multipart/form-data" method="post" action="/sign-ipa">
+  <label>IPA file: <input type="file" name="ipaFile" accept=".ipa" required></label><br>
+  <label>P12 file: <input type="file" name="p12File" accept=".p12" required></label><br>
+  <label>P12 password: <input type="password" name="p12Password" required></label><br>
+  <label>MobileProvision file: <input type="file" name="mobileprovisionFile" accept=".mobileprovision" required></label><br>
+  <button type="submit">Sign IPA</button>
+</form>
