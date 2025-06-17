@@ -1,16 +1,15 @@
-# server.py
 from flask import Flask, send_from_directory
 
 app = Flask(__name__)
 
+# Serve index.html at the root URL
 @app.route('/')
 def serve_index():
-    # Serve index.html from the root directory
     return send_from_directory('.', 'index.html')
 
-@app.route('/uploads/')
+# Serve index2.html in the /uploads/ path
+@app.route('/uploads/index2.html')
 def serve_index2():
-    # Serve index2.html from the uploads directory
     return send_from_directory('uploads', 'index2.html')
 
 if __name__ == '__main__':
