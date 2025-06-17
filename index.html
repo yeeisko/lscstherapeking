@@ -1,57 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Buttons</title>
-<style>
-  body {
-    height: 100vh;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #121212;
-    font-family: Arial, sans-serif;
-  }
-  .container {
-    display: flex;
-    gap: 20px;
-    flex-direction: row; /* ensures buttons are in a straight line */
-  }
-  .btn {
-    width: 160px;
-    height: 50px;
-    font-size: 18px;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    background-color: #0088cc;
-    box-shadow: 0 0 8px #00aaff, 0 0 20px #00aaff;
-    animation: glowBlue 2s ease-in-out infinite alternate;
-  }
-  @keyframes glowBlue {
-    from {
-      box-shadow: 0 0 8px #00aaff, 0 0 20px #00aaff;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telegram Links</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    to {
-      box-shadow: 0 0 20px #00ccff, 0 0 30px #00ccff;
+
+    body {
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-  }
-</style>
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, auto);
+      grid-gap: 20px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .button {
+      padding: 10px 20px;
+      background-color: #00aaff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00aaff, 0 0 40px #00aaff;
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+      user-select: text;
+      -webkit-user-select: text;
+      text-align: center;
+      width: 140px;
+      font-size: 14px;
+    }
+
+    .button:hover {
+      box-shadow: 0 0 25px #00ccff, 0 0 50px #00ccff;
+      transform: scale(1.05);
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <a href="https://t.me/lscs3" target="_blank" class="btn">my telegram</a>
-    <a href="https://t.me/p12cracking1" target="_blank" class="btn">my channel</a>
+    <button class="button" onclick="window.open('https://t.me/lscs3', '_blank')">my telegram</button>
+    <button class="button" onclick="window.open('https://t.me/p12Cracking1', '_blank')">my channel</button>
+
+    <button class="button" onclick="window.location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/lscs3apps/refs/heads/main/KRNL.plist'">
+      KRNL iOS - Signed
+    </button>
+    <button class="button" onclick="window.open('https://github.com/lscs3/KRNL/raw/refs/heads/main/44Certificates%20(Read%20ReadMe.txt%20for%20pass%20and%20more).zip', '_blank')">
+      44 Expired Certificates
+    </button>
+
+    <button class="button" onclick="window.location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/lscs3apps/refs/heads/main/Delta.plist'">
+      Delta iOS - Signed
+    </button>
   </div>
 </body>
 </html>
-
-
