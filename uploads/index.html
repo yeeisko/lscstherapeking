@@ -1,1 +1,55 @@
-<h1>Hello</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Buttons</title>
+<style>
+  body {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #121212;
+    font-family: Arial, sans-serif;
+  }
+  .container {
+    display: flex;
+    gap: 20px;
+    flex-direction: row; /* ensures buttons are in a straight line */
+  }
+  .btn {
+    width: 160px;
+    height: 50px;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    background-color: #0088cc;
+    box-shadow: 0 0 8px #00aaff, 0 0 20px #00aaff;
+    animation: glowBlue 2s ease-in-out infinite alternate;
+  }
+  @keyframes glowBlue {
+    from {
+      box-shadow: 0 0 8px #00aaff, 0 0 20px #00aaff;
+    }
+    to {
+      box-shadow: 0 0 20px #00ccff, 0 0 30px #00ccff;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <a href="https://t.me/lscs3" target="_blank" class="btn">my telegram</a>
+    <a href="https://t.me/p12cracking1" target="_blank" class="btn">my channel</a>
+  </div>
+</body>
+</html>
