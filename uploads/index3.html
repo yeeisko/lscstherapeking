@@ -1,91 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Link Shortener</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Link Shortener</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    body {
-      background-color: #000;
-      color: white;
-      font-family: Arial, sans-serif;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+    body {
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
 
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
 
-    input[type="text"] {
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      width: 300px;
-      font-size: 16px;
-    }
+    input[type="text"] {
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      width: 300px;
+      font-size: 16px;
+    }
 
-    .button {
-      padding: 10px 20px;
-      background-color: #00aaff;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 20px #00aaff, 0 0 40px #00aaff;
-      transition: 0.3s;
-      font-size: 16px;
-    }
+    .button {
+      padding: 10px 20px;
+      background-color: #00aaff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00aaff, 0 0 40px #00aaff;
+      transition: 0.3s;
+      font-size: 16px;
+    }
 
-    .button:hover {
-      box-shadow: 0 0 25px #00ccff, 0 0 50px #00ccff;
-    }
+    .button:hover {
+      box-shadow: 0 0 25px #00ccff, 0 0 50px #00ccff;
+    }
 
-    #result {
-      font-size: 16px;
-      color: #00ffcc;
-      margin-top: 10px;
-      word-break: break-all;
-    }
-  </style>
+    #result {
+      font-size: 16px;
+      color: #00ffcc;
+      margin-top: 10px;
+      word-break: break-all;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <input type="text" id="longUrl" placeholder="Enter URL to shorten..." />
-    <button class="button" onclick="shortenUrl()">Shorten URL</button>
-    <div id="result"></div>
-  </div>
+  <div class="container">
+    <input type="text" id="longUrl" placeholder="Enter URL to shorten..." />
+    <button class="button" onclick="shortenUrl()">Shorten URL</button>
+    <div id="result"></div>
+  </div>
 
-  <script>
-    async function shortenUrl() {
-      const longUrl = document.getElementById('longUrl').value;
-      if (!longUrl) {
-        alert("Please enter a URL.");
-        return;
-      }
+  <script>
+    function normalizeUrl(url) {
+      url = url.trim();
+      if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+      }
+      return url;
+    }
 
-      const apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`;
-      try {
-        const response = await fetch(apiUrl);
-        const shortUrl = await response.text();
-        document.getElementById('result').innerHTML = `Shortened URL: <a href="${shortUrl}" target="_blank" style="color: #00ccff;">${shortUrl}</a>`;
-      } catch (error) {
-        document.getElementById('result').innerText = "Failed to shorten URL. Please try again.";
-      }
-    }
-  </script>
+    async function shortenUrl() {
+      let longUrl = document.getElementById('longUrl').value;
+      if (!longUrl) {
+        alert("Please enter a URL.");
+        return;
+      }
+
+      longUrl = normalizeUrl(longUrl);
+
+      try {
+        new URL(longUrl); // Validate URL format
+      } catch {
+        alert("Invalid URL format.");
+        return;
+      }
+
+      const apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`;
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error('Network error');
+        const shortUrl = await response.text();
+
+        document.getElementById('result').innerHTML = `Shortened URL: <a href="${shortUrl}" target="_blank" style="color: #00ccff;">${shortUrl}</a>`;
+      } catch (error) {
+        document.getElementById('result').innerText = "Failed to shorten URL. Please try again.";
+      }
+    }
+  </script>
 </body>
 </html>
