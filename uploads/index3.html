@@ -14,12 +14,11 @@
     body {
       background-color: #000;
       color: white;
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       height: 100vh;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
     }
 
     .container {
@@ -30,28 +29,34 @@
     }
 
     input[type="text"] {
-      padding: 10px;
+      padding: 12px 20px;
       border: none;
-      border-radius: 8px;
-      width: 300px;
+      border-radius: 25px;
+      width: 280px;
       font-size: 16px;
+      background: #111;
+      color: white;
+      outline: none;
+      box-shadow: 0 0 15px #00bfff;
     }
 
     .button {
-      padding: 10px 20px;
-      background-color: #00aaff;
+      padding: 12px 25px;
+      background-color: #00bfff;
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 25px;
       font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 20px #00aaff, 0 0 40px #00aaff;
-      transition: 0.3s;
       font-size: 16px;
+      cursor: pointer;
+      text-transform: lowercase;
+      box-shadow: 0 0 15px #00bfff, 0 0 25px #00bfff;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
     }
 
     .button:hover {
-      box-shadow: 0 0 25px #00ccff, 0 0 50px #00ccff;
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #00e6ff, 0 0 40px #00e6ff;
     }
 
     #result {
@@ -59,31 +64,34 @@
       color: #00ffcc;
       margin-top: 10px;
       word-break: break-word;
-      display: flex;
+      display: none;
       align-items: center;
       gap: 10px;
     }
 
     #copyButton {
-      padding: 6px 10px;
+      padding: 8px 14px;
       font-size: 14px;
       border: none;
-      border-radius: 6px;
+      border-radius: 20px;
       background-color: #00cc88;
       color: white;
       cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 10px #00cc88;
     }
 
     #copyButton:hover {
       background-color: #00e69a;
+      box-shadow: 0 0 15px #00ffae;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <input type="text" id="longUrl" placeholder="Enter URL to shorten..." />
-    <button class="button" onclick="shortenUrl()">Shorten URL</button>
-    <div id="result" style="display: none;">
+    <input type="text" id="longUrl" placeholder="enter url to shorten..." />
+    <button class="button" onclick="shortenUrl()">shorten url</button>
+    <div id="result">
       <a id="shortUrl" href="#" target="_blank" style="color: #00ccff;"></a>
       <button id="copyButton" onclick="copyToClipboard()">Copy</button>
     </div>
@@ -118,8 +126,9 @@
         link.textContent = shortUrl;
         resultDiv.style.display = 'flex';
       } catch (error) {
-        document.getElementById('result').innerHTML = "Failed to shorten URL. Please try again.";
-        document.getElementById('result').style.display = 'block';
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = "Failed to shorten URL. Please try again.";
+        resultDiv.style.display = 'block';
       }
     }
 
