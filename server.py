@@ -7,10 +7,15 @@ app = Flask(__name__)
 def serve_index():
     return send_from_directory('.', 'index.html')
 
-# Serve index2.html in the /uploads/ path
+# Serve index2.html at /uploads/index2.html
 @app.route('/uploads/index2.html')
 def serve_index2():
     return send_from_directory('uploads', 'index2.html')
+
+# Serve index3.html at /uploads/index3.html
+@app.route('/uploads/index3.html')
+def serve_index3():
+    return send_from_directory('uploads', 'index3.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
