@@ -1,138 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>URL Shortener</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Link Shortener</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    body {
-      background-color: #000;
-      color: white;
-      font-family: Arial, sans-serif;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    body {
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
 
-    .container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      justify-content: center;
-      align-items: center;
-      width: 320px;
-    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
 
-    input[type="text"] {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 16px;
-      width: 100%;
-      box-shadow: 0 0 20px #00aaff, 0 0 40px #00aaff;
-      background-color: #000;
-      color: white;
-      outline: none;
-      text-align: center;
-    }
+    input[type="text"] {
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      width: 300px;
+      font-size: 16px;
+    }
 
-    button.shorten {
-      padding: 10px 0;
-      background-color: #00aaff;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 20px #00aaff, 0 0 40px #00aaff;
-      transition: box-shadow 0.3s ease, transform 0.2s ease;
-      width: 100%;
-      font-size: 16px;
-    }
+    .button {
+      padding: 10px 20px;
+      background-color: #00aaff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00aaff, 0 0 40px #00aaff;
+      transition: 0.3s;
+      font-size: 16px;
+    }
 
-    button.shorten:hover {
-      box-shadow: 0 0 25px #00ccff, 0 0 50px #00ccff;
-      transform: scale(1.05);
-    }
+    .button:hover {
+      box-shadow: 0 0 25px #00ccff, 0 0 50px #00ccff;
+    }
 
-    #result {
-      margin-top: 15px;
-      font-weight: bold;
-      color: #00aaff;
-      text-align: center;
-      word-break: break-word;
-      user-select: text;
-      text-shadow: 0 0 10px #00aaff, 0 0 20px #00aaff;
-    }
-
-    #result a {
-      color: #00ccff;
-      text-decoration: none;
-    }
-  </style>
+    #result {
+      font-size: 16px;
+      color: #00ffcc;
+      margin-top: 10px;
+      word-break: break-all;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <input type="text" id="urlInput" placeholder="Enter URL to shorten" autocomplete="off" />
-    <button class="shorten" onclick="shortenUrl()">Shorten URL</button>
-    <div id="result"></div>
-  </div>
+  <div class="container">
+    <input type="text" id="longUrl" placeholder="Enter URL to shorten..." />
+    <button class="button" onclick="shortenUrl()">Shorten URL</button>
+    <div id="result"></div>
+  </div>
 
-  <script>
-    function normalizeUrl(url) {
-      url = url.trim();
-      if (!url.match(/^https?:\/\//i)) {
-        url = 'https://' + url;
-      }
-      return url;
-    }
+  <script>
+    async function shortenUrl() {
+      const longUrl = document.getElementById('longUrl').value;
+      if (!longUrl) {
+        alert("Please enter a URL.");
+        return;
+      }
 
-    async function shortenUrl() {
-      const input = document.getElementById('urlInput');
-      let url = input.value;
-
-      if (!url) {
-        alert('Please enter a URL.');
-        return;
-      }
-
-      url = normalizeUrl(url);
-
-      try {
-        new URL(url); // validate URL
-      } catch {
-        alert('Invalid URL format.');
-        return;
-      }
-
-      // Fix: api URL should be a string with quotes
-      const api = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`;
-
-      try {
-        const response = await fetch(api);
-        if (!response.ok) throw new Error('Network response not ok');
-
-        const shortUrl = await response.text();
-
-        const resultDiv = document.getElementById('result');
-        // Fix: innerHTML strings need quotes
-        resultDiv.innerHTML = `<a href="${shortUrl}" target="_blank" rel="noopener noreferrer">${shortUrl}</a>`;
-      } catch {
-        alert('Error creating short URL. Please try again.');
-      }
-    }
-
-    document.getElementById('urlInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') shortenUrl();
-    });
-  </script>
+      const apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`;
+      try {
+        const response = await fetch(apiUrl);
+        const shortUrl = await response.text();
+        document.getElementById('result').innerHTML = `Shortened URL: <a href="${shortUrl}" target="_blank" style="color: #00ccff;">${shortUrl}</a>`;
+      } catch (error) {
+        document.getElementById('result').innerText = "Failed to shorten URL. Please try again.";
+      }
+    }
+  </script>
 </body>
 </html>
