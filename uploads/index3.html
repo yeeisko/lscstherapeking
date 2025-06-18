@@ -13,8 +13,8 @@
 
     body {
       background-color: #000;
+      font-family: Arial, sans-serif;
       color: white;
-      font-family: 'Arial', sans-serif;
       height: 100vh;
       display: flex;
       justify-content: center;
@@ -28,62 +28,65 @@
       gap: 20px;
     }
 
-    input[type="text"] {
-      padding: 12px 20px;
+    input[type="text"],
+    .button {
+      padding: 14px 25px;
       border: none;
-      border-radius: 25px;
-      width: 280px;
+      border-radius: 16px;
       font-size: 16px;
-      background: #111;
+      text-transform: lowercase;
+      font-weight: bold;
+      width: 260px;
+      text-align: center;
+      box-shadow: 0 0 15px #00bfff, 0 0 30px #00bfff;
+    }
+
+    input[type="text"] {
+      background-color: #000;
       color: white;
       outline: none;
-      box-shadow: 0 0 15px #00bfff;
     }
 
     .button {
-      padding: 12px 25px;
       background-color: #00bfff;
       color: white;
-      border: none;
-      border-radius: 25px;
-      font-weight: bold;
-      font-size: 16px;
       cursor: pointer;
-      text-transform: lowercase;
-      box-shadow: 0 0 15px #00bfff, 0 0 25px #00bfff;
       transition: transform 0.2s ease, box-shadow 0.3s ease;
     }
 
     .button:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 25px #00e6ff, 0 0 40px #00e6ff;
+      box-shadow: 0 0 25px #00e6ff, 0 0 50px #00e6ff;
     }
 
     #result {
-      font-size: 16px;
-      color: #00ffcc;
-      margin-top: 10px;
-      word-break: break-word;
+      font-size: 14px;
+      color: #00ffff;
       display: none;
+      flex-direction: column;
       align-items: center;
       gap: 10px;
     }
 
+    #shortUrl {
+      word-break: break-word;
+      color: #00ccff;
+    }
+
     #copyButton {
-      padding: 8px 14px;
-      font-size: 14px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 20px;
+      border-radius: 16px;
       background-color: #00cc88;
       color: white;
       cursor: pointer;
       font-weight: bold;
-      box-shadow: 0 0 10px #00cc88;
+      box-shadow: 0 0 15px #00cc88;
     }
 
     #copyButton:hover {
-      background-color: #00e69a;
-      box-shadow: 0 0 15px #00ffae;
+      background-color: #00e6aa;
+      box-shadow: 0 0 20px #00ffaa;
     }
   </style>
 </head>
@@ -92,8 +95,8 @@
     <input type="text" id="longUrl" placeholder="enter url to shorten..." />
     <button class="button" onclick="shortenUrl()">shorten url</button>
     <div id="result">
-      <a id="shortUrl" href="#" target="_blank" style="color: #00ccff;"></a>
-      <button id="copyButton" onclick="copyToClipboard()">Copy</button>
+      <a id="shortUrl" href="#" target="_blank"></a>
+      <button id="copyButton" onclick="copyToClipboard()">copy</button>
     </div>
   </div>
 
@@ -109,26 +112,23 @@
     async function shortenUrl() {
       let longUrl = document.getElementById('longUrl').value;
       if (!longUrl) {
-        alert("Please enter a URL.");
+        alert("please enter a url.");
         return;
       }
 
       longUrl = normalizeUrl(longUrl);
-
       const apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`;
+
       try {
         const response = await fetch(apiUrl);
         const shortUrl = await response.text();
-        const resultDiv = document.getElementById('result');
         const link = document.getElementById('shortUrl');
-
         link.href = shortUrl;
         link.textContent = shortUrl;
-        resultDiv.style.display = 'flex';
+
+        document.getElementById('result').style.display = 'flex';
       } catch (error) {
-        const resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = "Failed to shorten URL. Please try again.";
-        resultDiv.style.display = 'block';
+        alert("error shortening url. please try again.");
       }
     }
 
@@ -136,8 +136,8 @@
       const shortUrl = document.getElementById('shortUrl').textContent;
       navigator.clipboard.writeText(shortUrl).then(() => {
         const button = document.getElementById('copyButton');
-        button.textContent = 'Copied!';
-        setTimeout(() => button.textContent = 'Copy', 2000);
+        button.textContent = 'copied!';
+        setTimeout(() => button.textContent = 'copy', 2000);
       });
     }
   </script>
