@@ -70,37 +70,18 @@
   </div>
 
   <script>
-    function normalizeUrl(url) {
-      url = url.trim();
-      if (!/^https?:\/\//i.test(url)) {
-        url = 'https://' + url;
-      }
-      return url;
-    }
-
     async function shortenUrl() {
-      let longUrl = document.getElementById('longUrl').value;
+      const longUrl = document.getElementById('longUrl').value;
       if (!longUrl) {
         alert("Please enter a URL.");
         return;
       }
 
-      longUrl = normalizeUrl(longUrl);
-
-      try {
-        new URL(longUrl); // Validate URL format
-      } catch {
-        alert("Invalid URL format.");
-        return;
-      }
-
-      const apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`;
+      const apiUrl = https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)};
       try {
         const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error('Network error');
         const shortUrl = await response.text();
-
-        document.getElementById('result').innerHTML = `Shortened URL: <a href="${shortUrl}" target="_blank" style="color: #00ccff;">${shortUrl}</a>`;
+        document.getElementById('result').innerHTML = Shortened URL: <a href="${shortUrl}" target="_blank" style="color: #00ccff;">${shortUrl}</a>;
       } catch (error) {
         document.getElementById('result').innerText = "Failed to shorten URL. Please try again.";
       }
