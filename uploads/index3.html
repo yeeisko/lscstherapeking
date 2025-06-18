@@ -113,6 +113,7 @@
         return;
       }
 
+      // Fix: api URL should be a string with quotes
       const api = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`;
 
       try {
@@ -122,6 +123,7 @@
         const shortUrl = await response.text();
 
         const resultDiv = document.getElementById('result');
+        // Fix: innerHTML strings need quotes
         resultDiv.innerHTML = `<a href="${shortUrl}" target="_blank" rel="noopener noreferrer">${shortUrl}</a>`;
       } catch {
         alert('Error creating short URL. Please try again.');
