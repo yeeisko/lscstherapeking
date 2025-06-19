@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Image</title>
+  <style>
+    body {
+      background-color: #000;
+      font-family: Arial, sans-serif;
+      color: white;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    input[type="file"],
+    .button {
+      padding: 14px 25px;
+      border: none;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: lowercase;
+      text-align: center;
+      width: 260px;
+      color: white;
+      background-color: #000;
+      box-shadow: 0 0 15px #00bfff, 0 0 30px #00bfff;
+    }
+
+    .button {
+      background-color: #00bfff;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    .button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #00e6ff, 0 0 50px #00e6ff;
+    }
+
+    #link {
+      color: #00ffff;
+      word-break: break-word;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form id="uploadForm" enctype="multipart/form-data">
+      <input type="file" name="image" accept="image/*" required />
+      <button class="button" type="submit">upload image</button>
+    </form>
+    <div id="link"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("uploadForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      const res = await fetch("/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      const linkDiv = document.getElementById("link");
+
+      if (data.url) {
+        linkDiv.innerHTML = `<a href="${data.url}" target="_blank">${data.url}</a>`;
+      } else {
+        linkDiv.textContent = "Upload failed.";
+      }
+    });
+  </script>
+</body>
+</html>
