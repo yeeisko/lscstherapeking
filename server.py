@@ -17,5 +17,10 @@ def serve_index2():
 def serve_index3():
     return send_from_directory('uploads', 'index3.html')
 
+# Serve index4.html at /uploads/index4.html
+@app.route('/uploads/index4.html')
+def serve_index4():
+    return send_from_directory('uploads', 'index4.html')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
