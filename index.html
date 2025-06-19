@@ -1,75 +1,330 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Telegram Links</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<!DOCTYPE html> 
 
-    body {
-      background-color: #000;
-      color: white;
-      font-family: Arial, sans-serif;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+<html lang="en"> 
 
-    .container {
-      display: grid;
-      grid-template-columns: repeat(2, auto);
-      grid-gap: 20px;
-      justify-content: center;
-      align-items: center;
-    }
+<head> 
 
-    .button {
-      padding: 10px 20px;
-      background-color: #00aaff;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 20px #00aaff, 0 0 40px #00aaff;
-      transition: box-shadow 0.3s ease, transform 0.2s ease;
-      user-select: text;
-      -webkit-user-select: text;
-      text-align: center;
-      width: 140px;
-      font-size: 14px;
-    }
+<meta charset="UTF-8" /> 
 
-    .button:hover {
-      box-shadow: 0 0 25px #00ccff, 0 0 50px #00ccff;
-      transform: scale(1.05);
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <button class="button" onclick="window.open('https://t.me/lscs3', '_blank')">my telegram</button>
-    <button class="button" onclick="window.open('https://t.me/p12Cracking1', '_blank')">my channel</button>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
 
-    <button class="button" onclick="window.location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/lscs3apps/refs/heads/main/KRNL.plist'">
-      KRNL iOS - Signed
-    </button>
-    <button class="button" onclick="window.open('https://github.com/lscs3/KRNL/raw/refs/heads/main/44Certificates%20(Read%20ReadMe.txt%20for%20pass%20and%20more).zip', '_blank')">
-      44 Expired Certificates
-    </button>
+<meta name="description" content="lscs3 - iOS Certificate Cracker and Content Creator. Download signed iOS apps, certificates, and access ESign bypass tools." /> 
 
-    <button class="button" onclick="window.location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/lscs3apps/refs/heads/main/Delta.plist'">
-      Delta iOS - Signed
-    </button>
-    <button class="button" onclick="window.location.href='https://lscstherapeking.xyz/uploads/index2.html'">
-      ESign Bypass Revoke
-    </button>
-  </div>
-</body>
-</html>
+<meta name="keywords" content="lscs3, iOS certificates, cert cracker, KRNL iOS, Delta iOS, ESign bypass, iOS apps, certificate cracking" /> 
+
+<meta name="author" content="lscs3" /> 
+
+<meta property="og:title" content="lscs3 | Telegram Links" /> 
+
+<meta property="og:description" content="Access iOS certificate cracking tools, signed apps, and join our Telegram community." /> 
+
+<meta property="og:image" content="https://github.com/lscs3/lscs3apps/blob/main/IMG_20250320_000350_328.png?raw=true" /> 
+
+<meta property="og:url" content="https://lscstherapeking.xyz" /> 
+
+<meta name="twitter:card" content="summary_large_image" /> 
+
+<meta name="twitter:title" content="lscs3 | Telegram Links" /> 
+
+<meta name="twitter:description" content="iOS Certificate Cracker - Download signed apps and certificates" /> 
+
+<meta name="twitter:image" content="https://github.com/lscs3/lscs3apps/blob/main/IMG_20250320_000350_328.png?raw=true" /> 
+
+<meta name="robots" content="index, follow" /> 
+
+<link rel="canonical" href="https://lscstherapeking.xyz" /> 
+
+<title>lscs3 | Telegram Links - iOS Certificate Cracker</title> 
+
+<script src="https://cdn.tailwindcss.com"></script> 
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> 
+
+<script> 
+
+async function fetchCertStatus() { 
+
+try { 
+
+//cococloud api 
+
+const response = await fetch('https://api.cococloud-signing.online/cert-status/api', { 
+
+method: 'GET', 
+
+headers: { 
+
+'Accept': 'application/json', 
+
+} 
+
+}); 
+
+ 
+
+if (!response.ok) { 
+
+throw new Error('Network response was not ok'); 
+
+} 
+
+ 
+
+const data = await response.json(); 
+
+ 
+
+const statusElement = document.getElementById('cert-status'); 
+
+const statusBadge = document.getElementById('status-badge'); 
+
+const certName = document.getElementById('cert-name'); 
+
+const expiryDate = document.getElementById('expiry-date'); 
+
+const appIdName = document.getElementById('app-id-name'); 
+
+const loader = document.getElementById('status-loader'); 
+
+const downloadBtn = document.getElementById('cert-download-btn'); 
+
+ 
+
+loader.classList.add('hidden'); 
+
+ 
+
+certName.textContent = data.CertificateName || 'Unknown Certificate'; 
+
+appIdName.textContent = data.AppIDName || 'Unknown App'; 
+
+ 
+
+if (data['certdownload-cert-files']) { 
+
+downloadBtn.href = data['certdownload-cert-files']; 
+
+downloadBtn.classList.remove('hidden'); 
+
+} else { 
+
+downloadBtn.classList.add('hidden'); 
+
+} 
+
+ 
+
+if (data.CertificateStatus === 'Revoked') { 
+
+statusBadge.innerHTML = '<i class="fas fa-times-circle mr-1"></i> Revoked'; 
+
+statusBadge.className = 'px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-semibold flex items-center'; 
+
+expiryDate.innerHTML = `<i class="fas fa-calendar-times mr-1"></i> Revoked: ${new Date(data.RevocationDate).toLocaleDateString()}`; 
+
+} else if (data.CertificateStatus === 'Signed') { 
+
+statusBadge.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Signed'; 
+
+statusBadge.className = 'px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold flex items-center'; 
+
+expiryDate.innerHTML = `<i class="fas fa-calendar-check mr-1"></i> Expires: ${new Date(data.ExpirationDate).toLocaleDateString()}`; 
+
+} else { 
+
+statusBadge.innerHTML = '<i class="fas fa-question-circle mr-1"></i> ' + data.CertificateStatus; 
+
+statusBadge.className = 'px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs font-semibold flex items-center'; 
+
+expiryDate.innerHTML = `<i class="fas fa-calendar mr-1"></i> Expires: ${new Date(data.ExpirationDate).toLocaleDateString()}`; 
+
+} 
+
+ 
+
+statusElement.classList.remove('hidden'); 
+
+} catch (error) { 
+
+console.error('Failed to fetch certificate status:', error); 
+
+document.getElementById('status-loader').innerHTML = '<p class="text-red-400 text-sm"><i class="fas fa-exclamation-triangle mr-2"></i>Failed to load certificate status</p>'; 
+
+const downloadBtn = document.getElementById('cert-download-btn'); 
+
+if (downloadBtn) downloadBtn.classList.add('hidden'); 
+
+} 
+
+} 
+
+ 
+
+window.addEventListener('load', fetchCertStatus); 
+
+</script> 
+
+<script> 
+
+tailwind.config = { 
+
+theme: { 
+
+extend: { 
+
+animation: { 
+
+'gradient': 'gradient 15s ease infinite', 
+
+'float': 'float 6s ease-in-out infinite', 
+
+}, 
+
+keyframes: { 
+
+gradient: { 
+
+'0%, 100%': { 
+
+'background-size': '200% 200%', 
+
+'background-position': 'left center' 
+
+}, 
+
+'50%': { 
+
+'background-size': '200% 200%', 
+
+'background-position': 'right center' 
+
+} 
+
+}, 
+
+float: { 
+
+'0%, 100%': { transform: 'translateY(0px)' }, 
+
+'50%': { transform: 'translateY(-20px)' } 
+
+} 
+
+} 
+
+} 
+
+} 
+
+} 
+
+</script> 
+
+<style> 
+
+.bg-animated { 
+
+background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); 
+
+background-size: 400% 400%; 
+
+animation: gradient 15s ease infinite; 
+
+} 
+
+ 
+
+.glow { 
+
+box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); 
+
+} 
+
+ 
+
+.glow:hover { 
+
+box-shadow: 0 0 30px rgba(59, 130, 246, 0.8), 0 0 60px rgba(59, 130, 246, 0.4); 
+
+} 
+
+</style> 
+
+</head> 
+
+<body class="min-h-screen bg-animated flex items-center justify-center p-4"> 
+
+<div class="absolute inset-0 bg-black/50"></div> 
+
+ 
+
+<div class="relative z-10 bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 max-w-2xl w-full"> 
+
+<div class="flex flex-col items-center mb-8"> 
+
+<div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white/30 shadow-2xl mb-4 animate-float"> 
+
+<img src="https://github.com/lscs3/lscs3apps/blob/main/IMG_20250320_000350_328.png?raw=true" alt="lscs3 Profile Picture" class="w-full h-full object-cover"> 
+
+</div> 
+
+<h1 class="text-3xl font-bold text-white mb-2">@lscs3</h1> 
+
+<p class="text-white/70 text-sm mb-4">Cert cracker & Content Creator</p> 
+
+<div class="flex gap-4 text-white/60"> 
+
+<span class="flex items-center gap-1 text-sm"> 
+
+<i class="fas fa-users"></i> 
+
+1.2K members 
+
+</span> 
+
+<span class="flex items-center gap-1 text-sm"> 
+
+<i class="fas fa-code"></i> 
+
+iOS cert cracker 
+
+</span> 
+
+</div> 
+
+</div> 
+
+ 
+
+<div class="w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-8"></div> 
+
+ 
+
+<div id="status-loader" class="mb-6 text-center"> 
+
+<div class="inline-flex items-center gap-2 text-white/60"> 
+
+<i class="fas fa-spinner fa-spin"></i> 
+
+<span class="text-sm">Loading certificate status...</span> 
+
+</div> 
+
+</div> 
+
+ 
+
+<div id="cert-status" class="hidden mb-8 bg-white/5 rounded-2xl p-6 border border-white/10"> 
+
+<div class="flex items-center justify-between mb-4"> 
+
+<h2 class="text-lg font-semibold text-white flex items-center gap-2"> 
+
+<i class="fas fa-certificate"></i> 
+
+Certificate Status 
+
+</h2> 
+
+<span id="status-badge" class="px-3 py-1 bg-gray-500/20 text-gray-400 rounded-full text-xs font-semibold"></span> 
+
