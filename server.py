@@ -1,7 +1,7 @@
 import subprocess
 from flask import Flask, send_from_directory
 
-app = Flask(__name__)
+app = Flask(__name__)  # corrected __name__
 
 @app.route('/')
 def serve_index():
@@ -15,10 +15,12 @@ def serve_index2():
 def serve_index3():
     return send_from_directory('uploads', 'index3.html')
 
-# New route to run upload.py
+@app.route('/uploads/index5.html')  # new route for index5.html
+def serve_index5():
+    return send_from_directory('uploads', 'index5.html')
+
 @app.route('/run-upload')
 def run_upload():
-    # Run upload.py as a separate process
     result = subprocess.run(['python3', 'uploads/upload.py'], capture_output=True, text=True)
 
     if result.returncode == 0:
@@ -26,5 +28,5 @@ def run_upload():
     else:
         return f"Error running upload.py:\n{result.stderr}", 500
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # corrected __name__ and __main__
     app.run(host='0.0.0.0', port=5000)
