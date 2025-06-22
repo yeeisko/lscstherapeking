@@ -5,25 +5,100 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>PEM and Private Key Matcher with node-forge</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 2em; max-width: 700px; }
-  textarea { width: 100%; height: 150px; margin-bottom: 1em; font-family: monospace; }
-  button { padding: 0.5em 1em; font-size: 1em; }
-  #result { margin-top: 1em; font-weight: bold; }
+  body {
+    background: radial-gradient(circle at top left, #310c5f, #000000);
+    color: #ddd;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 2em auto;
+    max-width: 700px;
+    text-align: center;
+  }
+
+  .container {
+    background: #0f0c23;
+    border-radius: 20px;
+    padding: 2em;
+    box-shadow: 0 0 15px 2px #6b4ccc;
+    border: 1px solid #6741d9;
+  }
+
+  h2 {
+    color: #bf4baf;
+    font-weight: 700;
+    margin-bottom: 0.5em;
+  }
+
+  label {
+    color: #a9a4c7;
+    font-weight: 600;
+    display: block;
+    text-align: left;
+    margin: 1em 0 0.3em;
+  }
+
+  textarea {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 1em;
+    background: #1f1c36;
+    color: #c3b8ff;
+    border: none;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 1em;
+    padding: 0.7em;
+    box-shadow: inset 0 0 8px #6741d9;
+    resize: vertical;
+  }
+
+  button {
+    background: linear-gradient(90deg, #6441a5, #bf4baf);
+    border: none;
+    border-radius: 30px;
+    padding: 0.8em 2em;
+    font-weight: bold;
+    font-size: 1.1em;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 5px 10px #bf4bafaa;
+    transition: background 0.3s ease;
+  }
+
+  button:hover {
+    background: linear-gradient(90deg, #bf4baf, #944d9e);
+  }
+
+  #result {
+    margin-top: 1.2em;
+    font-weight: bold;
+    font-size: 1.2em;
+    text-shadow: 0 0 6px #bf4baf;
+  }
+
+  #result.success {
+    color: #37d777;
+  }
+
+  #result.error {
+    color: #ff416c;
+  }
 </style>
 </head>
 <body>
-<h2>Match .pem Certificate and .key Private Key</h2>
-<p>Paste your <strong>.pem</strong> certificate and <strong>.key</strong> private key contents below, then click "Check Match".</p>
+  <div class="container">
+    <h2>Match .pem Certificate and .key Private Key</h2>
+    <p>Paste your <strong>.pem</strong> certificate and <strong>.key</strong> private key contents below, then click "Check Match".</p>
 
-<label for="pemInput">.pem Certificate (Public Certificate)</label><br/>
-<textarea id="pemInput" placeholder="-----BEGIN CERTIFICATE----- ... -----END CERTIFICATE-----"></textarea>
+    <label for="pemInput">.pem Certificate (Public Certificate)</label>
+    <textarea id="pemInput" placeholder="-----BEGIN CERTIFICATE----- ... -----END CERTIFICATE-----"></textarea>
 
-<label for="keyInput">.key Private Key</label><br/>
-<textarea id="keyInput" placeholder="-----BEGIN PRIVATE KEY----- ... -----END PRIVATE KEY-----"></textarea>
+    <label for="keyInput">.key Private Key</label>
+    <textarea id="keyInput" placeholder="-----BEGIN PRIVATE KEY----- ... -----END PRIVATE KEY-----"></textarea>
 
-<button id="checkBtn">Check Match</button>
+    <button id="checkBtn">Check Match</button>
 
-<div id="result"></div>
+    <div id="result"></div>
+  </div>
 
 <script src="https://cdn.jsdelivr.net/npm/node-forge@1.3.1/dist/forge.min.js"></script>
 <script>
@@ -35,14 +110,10 @@
 
   function getPublicKeyFromPrivateKey(pemKey) {
     const forge = window.forge;
-    // Attempt to parse private key from PEM
     try {
-      return forge.pki.privateKeyFromPem(pemKey).publicKey || forge.pki.setRsaPublicKey(
-        forge.pki.privateKeyFromPem(pemKey).n,
-        forge.pki.privateKeyFromPem(pemKey).e
-      );
+      const privateKey = forge.pki.privateKeyFromPem(pemKey);
+      return privateKey.publicKey || forge.pki.setRsaPublicKey(privateKey.n, privateKey.e);
     } catch {
-      // If standard parse fails, try as PKCS#8 or encrypted key with empty password
       const privateKey = forge.pki.decryptRsaPrivateKey(pemKey, '');
       if (!privateKey) throw new Error('Invalid private key format');
       return forge.pki.setRsaPublicKey(privateKey.n, privateKey.e);
@@ -63,11 +134,11 @@
     const key = document.getElementById('keyInput').value.trim();
     const resultDiv = document.getElementById('result');
     resultDiv.textContent = '';
-    resultDiv.style.color = 'black';
-
+    resultDiv.className= '';
+    
     if (!pem || !key) {
       resultDiv.textContent = 'Please provide both the certificate and private key.';
-      resultDiv.style.color = 'red';
+      resultDiv.className = 'error';
       return;
     }
 
@@ -80,14 +151,14 @@
 
       if (certFingerprint === privFingerprint) {
         resultDiv.textContent = '✅ The private key matches the certificate.';
-        resultDiv.style.color = 'green';
+        resultDiv.className = 'success';
       } else {
         resultDiv.textContent = '❌ The private key does NOT match the certificate.';
-        resultDiv.style.color = 'red';
+        resultDiv.className = 'error';
       }
     } catch (e) {
       resultDiv.textContent = 'Error parsing keys: ' + e.message;
-      resultDiv.style.color = 'red';
+      resultDiv.className = 'error';
     }
   }
 
