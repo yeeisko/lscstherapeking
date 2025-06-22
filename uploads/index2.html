@@ -1,3 +1,4 @@
+<!-- Full HTML code with new buttons added -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,6 +23,50 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+  <!-- Tailwind Config & Animations -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          animation: {
+            'gradient': 'gradient 8s ease infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+            'orb': 'orb 20s ease-in-out infinite',
+            'orb-reverse': 'orbReverse 25s ease-in-out infinite',
+          },
+          keyframes: {
+            gradient: {
+              '0%, 100%': { 'background-position': '0% 50%' },
+              '50%': { 'background-position': '100% 50%' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-20px)' }
+            },
+            pulseGlow: {
+              '0%, 100%': { opacity: '0.5' },
+              '50%': { opacity: '1' }
+            },
+            orb: {
+              '0%': { transform: 'translate(0, 0) scale(1)' },
+              '33%': { transform: 'translate(30%, -50%) scale(1.1)' },
+              '66%': { transform: 'translate(-20%, 40%) scale(0.9)' },
+              '100%': { transform: 'translate(0, 0) scale(1)' }
+            },
+            orbReverse: {
+              '0%': { transform: 'translate(0, 0) scale(1)' },
+              '33%': { transform: 'translate(-30%, 50%) scale(0.9)' },
+              '66%': { transform: 'translate(20%, -40%) scale(1.1)' },
+              '100%': { transform: 'translate(0, 0) scale(1)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Cert Status Fetcher -->
   <script>
     async function fetchCertStatus() {
       try {
@@ -67,48 +112,7 @@
     window.addEventListener('load', fetchCertStatus);
   </script>
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          animation: {
-            'gradient': 'gradient 8s ease infinite',
-            'float': 'float 6s ease-in-out infinite',
-            'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
-            'orb': 'orb 20s ease-in-out infinite',
-            'orb-reverse': 'orbReverse 25s ease-in-out infinite',
-          },
-          keyframes: {
-            gradient: {
-              '0%, 100%': { 'background-position': '0% 50%' },
-              '50%': { 'background-position': '100% 50%' }
-            },
-            float: {
-              '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-20px)' }
-            },
-            pulseGlow: {
-              '0%, 100%': { opacity: '0.5' },
-              '50%': { opacity: '1' }
-            },
-            orb: {
-              '0%': { transform: 'translate(0, 0) scale(1)' },
-              '33%': { transform: 'translate(30%, -50%) scale(1.1)' },
-              '66%': { transform: 'translate(-20%, 40%) scale(0.9)' },
-              '100%': { transform: 'translate(0, 0) scale(1)' }
-            },
-            orbReverse: {
-              '0%': { transform: 'translate(0, 0) scale(1)' },
-              '33%': { transform: 'translate(-30%, 50%) scale(0.9)' },
-              '66%': { transform: 'translate(20%, -40%) scale(1.1)' },
-              '100%': { transform: 'translate(0, 0) scale(1)' }
-            }
-          }
-        }
-      }
-    }
-  </script>
-
+  <!-- Styles -->
   <style>
     body { background: #000; overflow-x: hidden; }
     .bg-animated { position: fixed; inset: 0; background: linear-gradient(45deg, #000, #111, #000); z-index: 0; }
@@ -135,9 +139,10 @@
     <div class="color-orb orb3"></div>
   </div>
 
-  <main class="relative z-10 gradient-border max-w-2xl w-full">
-    <section class="gradient-border-inner">
-      <header class="flex flex-col items-center mb-8">
+  <div class="relative z-10 gradient-border max-w-2xl w-full">
+    <div class="gradient-border-inner">
+      <!-- Profile & Header -->
+      <div class="flex flex-col items-center mb-8">
         <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-purple-500/30 shadow-2xl mb-4 animate-float glow">
           <img src="https://github.com/lscs3/lscs3apps/blob/main/IMG_20250320_000350_328.png?raw=true" alt="lscs3 Profile Picture" class="w-full h-full object-cover">
         </div>
@@ -147,17 +152,18 @@
           <span class="flex items-center gap-1 text-sm"><i class="fas fa-users text-purple-400"></i> 1.2K members</span>
           <span class="flex items-center gap-1 text-sm"><i class="fas fa-code text-pink-400"></i> iOS cert cracker</span>
         </div>
-      </header>
+      </div>
 
+      <!-- Divider -->
       <div class="w-full h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent mb-8"></div>
 
+      <!-- Certificate Status -->
       <div id="status-loader" class="mb-6 text-center">
         <div class="inline-flex items-center gap-2 text-gray-400">
           <i class="fas fa-spinner fa-spin text-purple-400"></i>
           <span class="text-sm">Loading certificate status...</span>
         </div>
       </div>
-
       <div id="cert-status" class="hidden mb-8 status-card rounded-2xl p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-lg font-semibold text-white flex items-center gap-2">
@@ -171,22 +177,24 @@
           <div id="expiry-date"></div>
         </div>
         <div class="mt-4">
-          <a id="cert-download-btn" href="#" target="_blank" rel="noopener noreferrer" class="hidden inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600/20 to-pink-600/20 text-purple-400 rounded-lg text-sm font-medium border button-gradient">
+          <a id="cert-download-btn" href="#" target="_blank" class="hidden inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600/20 to-pink-600/20 text-purple-400 rounded-lg text-sm font-medium border button-gradient">
             <i class="fas fa-download"></i> Download Certificate Files
           </a>
         </div>
       </div>
 
+      <!-- Main Button Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <button onclick="location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/PlistFiles/refs/heads/main/ESign_Vietnam_Technological.plist'" class="button-gradient bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">Esign Vietnam Technological</button>
-        <button onclick="location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/PlistFiles/refs/heads/main/ESign_VIETTEL_GROUP.plist'" class="button-gradient bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">Esign VIETTEL GROUP</button>
-        <button onclick="location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/PlistFiles/refs/heads/main/ESign_EEO_Education_LTD.plist'" class="button-gradient bg-gradient-to-r from-yellow-600 to-orange-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">Esign EEO Education LTD</button>
-        <button onclick="location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/PlistFiles/refs/heads/main/ESign_CHIBA_INSTITUTE.plist'" class="button-gradient bg-gradient-to-r from-pink-600 to-red-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">Esign CHIBA INSTITUTE</button>
-        <button onclick="location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/PlistFiles/refs/heads/main/ESign_CENTRAL_POWER.plist'" class="button-gradient bg-gradient-to-r from-emerald-600 to-lime-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">Esign CENTRAL POWER</button>
-        <button onclick="window.open('https://tinyurl.com/5py6ts5a', '_blank', 'noopener,noreferrer')" class="button-gradient bg-gradient-to-r from-slate-600 to-gray-700 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">DNS - Important</button>
-        <button onclick="window.open('https://github.com/lscs3/lscs3apps/raw/refs/heads/main/lscsCerts.zip', '_blank', 'noopener,noreferrer')" class="button-gradient bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">CERTIFICATE FILES</button>
+        <button onclick="window.location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/PlistFiles/refs/heads/main/ESign_Vietnam_Technological.plist'" class="button-gradient bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">Esign Vietnam Technological</button>
+        <button onclick="window.location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/PlistFiles/refs/heads/main/ESign_VIETTEL_GROUP.plist'" class="button-gradient bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">Esign VIETTEL GROUP</button>
+        <button onclick="window.location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/PlistFiles/refs/heads/main/ESign_EEO_Education_LTD.plist'" class="button-gradient bg-gradient-to-r from-yellow-600 to-orange-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">Esign EEO Education LTD</button>
+        <button onclick="window.location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/PlistFiles/refs/heads/main/ESign_CHIBA_INSTITUTE.plist'" class="button-gradient bg-gradient-to-r from-pink-600 to-red-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">Esign CHIBA INSTITUTE</button>
+        <button onclick="window.location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/PlistFiles/refs/heads/main/ESign_CENTRAL_POWER.plist'" class="button-gradient bg-gradient-to-r from-emerald-600 to-lime-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">Esign CENTRAL POWER</button>
+        <button onclick="window.open('https://tinyurl.com/5py6ts5a', '_blank')" class="button-gradient bg-gradient-to-r from-slate-600 to-gray-700 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">DNS - Important</button>
+        <button onclick="window.open('https://github.com/lscs3/lscs3apps/raw/refs/heads/main/lscsCerts.zip', '_blank')" class="button-gradient bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">CERTIFICATE FILES</button>
       </div>
-    </section>
-  </main>
+
+    </div>
+  </div>
 </body>
 </html>
