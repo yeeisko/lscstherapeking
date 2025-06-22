@@ -6,7 +6,7 @@ app = Flask(__name__)  # corrected to __name__
 def serve_index():
     return send_from_directory('.', 'index.html')
 
-@app.route('/uploads/index2.html')
+@app.route('/uploads/index1.html')
 def serve_index2():
     return send_from_directory('uploads', 'index2.html')
 
