@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PEM and Private Key Matcher</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 2em; max-width: 700px; }
+  textarea { width: 100%; height: 150px; margin-bottom: 1em; font-family: monospace; }
+  button { padding: 0.5em 1em; font-size: 1em; }
+  #result { margin-top: 1em; font-weight: bold; }
+</style>
+</head>
+<body>
+<h2>Match .pem Certificate and .key Private Key</h2>
+<p>Paste your <strong>.pem</strong> certificate and <strong>.key</strong> private key contents below, then click "Check Match".</p>
+
+<label for="pemInput">.pem Certificate (Public Certificate)</label><br/>
+<textarea id="pemInput" placeholder="-----BEGIN CERTIFICATE----- ... -----END CERTIFICATE-----"></textarea>
+
+<label for="keyInput">.key Private Key</label><br/>
+<textarea id="keyInput" placeholder="-----BEGIN PRIVATE KEY----- ... -----END PRIVATE KEY-----"></textarea>
+
+<button id="checkBtn">Check Match</button>
+
+<div id="result"></div>
+
+<!-- jsrsasign library for crypto parsing -->
+<script src="https://cdn.jsdelivr.net/npm/jsrsasign"></script>
+<script>
+  function checkMatch() {
+    const pem = document.getElementById('pemInput').value.trim();
+    const key = document.getElementById('keyInput').value.trim();
+    const resultDiv = document.getElementById('result');
+    resultDiv.textContent = '';
+    resultDiv.style.color = 'black';
+
+    if (!pem || !key) {
+      resultDiv.textContent = 'Please provide both the certificate and private key.';
+      resultDiv.style.color = 'red';
+      return;
+    }
+
+    try {
+      const X509 = jsrsasign.X509;
+      const KEYUTIL = jsrsasign.KEYUTIL;
+
+      // Parse certificate and extract public key
+      const x509 = new X509();
+      x509.readCertPEM(pem);
+      const pubKeyFromCert = x509.getPublicKey();
+
+      // Parse private key and get its public key component
+      const prvKeyObj = KEYUTIL.getKey(key);
+      const pubKeyFromPrivate = KEYUTIL.getKey(prvKeyObj);
+
+      // Compare public keys by PEM string
+      const pubKeyCertPEM = pubKeyFromCert.getPEM();
+      const pubKeyPrivPEM = pubKeyFromPrivate.getPEM();
+
+      if (pubKeyCertPEM === pubKeyPrivPEM) {
+        resultDiv.textContent = '✅ The private key matches the certificate.';
+        resultDiv.style.color = 'green';
+      } else {
+        resultDiv.textContent = '❌ The private key does NOT match the certificate.';
+        resultDiv.style.color = 'red';
+      }
+    } catch (e) {
+      resultDiv.textContent = 'Error parsing keys: ' + e.message;
+      resultDiv.style.color = 'red';
+    }
+  }
+
+  document.getElementById('checkBtn').addEventListener('click', checkMatch);
+</script>
+</body>
+</html>
