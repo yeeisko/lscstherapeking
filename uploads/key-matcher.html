@@ -25,7 +25,6 @@
 
 <div id="result"></div>
 
-<!-- jsrsasign library for crypto parsing -->
 <script src="https://cdn.jsdelivr.net/npm/jsrsasign"></script>
 <script>
   function checkMatch() {
@@ -45,20 +44,17 @@
       const X509 = jsrsasign.X509;
       const KEYUTIL = jsrsasign.KEYUTIL;
 
-      // Parse certificate and extract public key
+      // Parse certificate and extract public key PEM
       const x509 = new X509();
       x509.readCertPEM(pem);
-      const pubKeyFromCert = x509.getPublicKey();
+      const pubKeyFromCertPEM = x509.getPublicKeyPEM();
 
-      // Parse private key and get its public key component
+      // Parse private key and get public key PEM
       const prvKeyObj = KEYUTIL.getKey(key);
-      const pubKeyFromPrivate = KEYUTIL.getKey(prvKeyObj);
+      const pubKeyFromPrivatePEM = KEYUTIL.getPEM(prvKeyObj);
 
-      // Compare public keys by PEM string
-      const pubKeyCertPEM = pubKeyFromCert.getPEM();
-      const pubKeyPrivPEM = pubKeyFromPrivate.getPEM();
-
-      if (pubKeyCertPEM === pubKeyPrivPEM) {
+      // Compare public key PEMs
+      if (pubKeyFromCertPEM === pubKeyFromPrivatePEM) {
         resultDiv.textContent = '✅ The private key matches the certificate.';
         resultDiv.style.color = 'green';
       } else {
