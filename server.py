@@ -8,7 +8,7 @@ def serve_index():
 
 @app.route('/uploads/index1.html')
 def serve_index2():
-    return send_from_directory('uploads', 'index2.html')
+    return send_from_directory('uploads', 'index1.html')
 
 if __name__ == '__main__':  # corrected to __name__ and __main__
     app.run(host='0.0.0.0', port=5000)
