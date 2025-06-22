@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PEM and Private Key Matcher</title>
+<title>PEM and Private Key Matcher with node-forge</title>
 <style>
   body { font-family: Arial, sans-serif; margin: 2em; max-width: 700px; }
   textarea { width: 100%; height: 150px; margin-bottom: 1em; font-family: monospace; }
@@ -25,9 +25,39 @@
 
 <div id="result"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/jsrsasign/dist/jsrsasign-latest-all-min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/node-forge@1.3.1/dist/forge.min.js"></script>
 <script>
+  function getPublicKeyFromCert(pemCert) {
+    const forge = window.forge;
+    const cert = forge.pki.certificateFromPem(pemCert);
+    return cert.publicKey;
+  }
+
+  function getPublicKeyFromPrivateKey(pemKey) {
+    const forge = window.forge;
+    // Attempt to parse private key from PEM
+    try {
+      return forge.pki.privateKeyFromPem(pemKey).publicKey || forge.pki.setRsaPublicKey(
+        forge.pki.privateKeyFromPem(pemKey).n,
+        forge.pki.privateKeyFromPem(pemKey).e
+      );
+    } catch {
+      // If standard parse fails, try as PKCS#8 or encrypted key with empty password
+      const privateKey = forge.pki.decryptRsaPrivateKey(pemKey, '');
+      if (!privateKey) throw new Error('Invalid private key format');
+      return forge.pki.setRsaPublicKey(privateKey.n, privateKey.e);
+    }
+  }
+
+  function getPublicKeyFingerprint(publicKey) {
+    const forge = window.forge;
+    const asn1 = forge.pki.publicKeyToAsn1(publicKey);
+    const der = forge.asn1.toDer(asn1).getBytes();
+    const md = forge.md.sha256.create();
+    md.update(der);
+    return md.digest().toHex();
+  }
+
   function checkMatch() {
     const pem = document.getElementById('pemInput').value.trim();
     const key = document.getElementById('keyInput').value.trim();
@@ -42,22 +72,13 @@
     }
 
     try {
-      const X509 = jsrsasign.X509;
-      const KEYUTIL = jsrsasign.KEYUTIL;
+      const certPubKey = getPublicKeyFromCert(pem);
+      const privPubKey = getPublicKeyFromPrivateKey(key);
 
-      // Parse certificate and extract public key PEM
-      const x509 = new X509();
-      x509.readCertPEM(pem);
-      const pubKeyFromCertPEM = x509.getPublicKeyPEM();
+      const certFingerprint = getPublicKeyFingerprint(certPubKey);
+      const privFingerprint = getPublicKeyFingerprint(privPubKey);
 
-      // Parse private key and get public key object
-      const prvKeyObj = KEYUTIL.getKey(key);
-
-      // Extract public key from private key object (RSAPublicKey or ECPublicKey)
-      const pubKeyFromPrivatePEM = KEYUTIL.getPEM(prvKeyObj);
-
-      // Compare public keys PEM format
-      if (pubKeyFromCertPEM === pubKeyFromPrivatePEM) {
+      if (certFingerprint === privFingerprint) {
         resultDiv.textContent = '✅ The private key matches the certificate.';
         resultDiv.style.color = 'green';
       } else {
