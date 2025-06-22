@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PEM and Private Key Matcher</title>
+<title>Certificate and Private Key Checker</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -11,42 +11,37 @@
     max-width: 700px;
     color: #333;
   }
-
   label {
     display: block;
     font-weight: 600;
     margin-bottom: 0.4em;
     color: #555;
   }
-
   textarea {
     width: 100%;
-    height: 240px;
+    height: 320px;  /* Larger textarea height */
     border: 1px solid #ccc;
     border-radius: 4px;
-    padding: 10px;
+    padding: 12px;
     font-family: monospace;
     font-size: 1rem;
     resize: vertical;
     box-sizing: border-box;
     margin-bottom: 2.5em;
   }
-
   button {
     background-color: #2f80ed;
     color: white;
     border: none;
-    padding: 0.8em 1.8em;
-    font-size: 1rem;
+    padding: 1em 2em;
+    font-size: 1.1rem;
     font-weight: 600;
     border-radius: 5px;
     cursor: pointer;
   }
-
   button:hover {
     background-color: #1366d6;
   }
-
   #result {
     margin-top: 1.5em;
     font-weight: bold;
@@ -56,10 +51,10 @@
 <body>
 
 <label for="pemInput">Enter your Certificate</label>
-<textarea id="pemInput" placeholder="-----BEGIN CERTIFICATE----- ... -----END CERTIFICATE-----"></textarea>
+<textarea id="pemInput" placeholder="-----BEGIN CERTIFICATE-----&#10;...&#10;-----END CERTIFICATE-----"></textarea>
 
 <label for="keyInput">Enter your Private Key</label>
-<textarea id="keyInput" placeholder="-----BEGIN PRIVATE KEY----- ... -----END PRIVATE KEY-----"></textarea>
+<textarea id="keyInput" placeholder="-----BEGIN PRIVATE KEY-----&#10;...&#10;-----END PRIVATE KEY-----"></textarea>
 
 <button id="checkBtn">Check Match</button>
 
@@ -69,8 +64,7 @@
 <script>
   function getPublicKeyFromCert(pemCert) {
     const forge = window.forge;
-    const cert = forge.pki.certificateFromPem(pemCert);
-    return cert.publicKey;
+    return forge.pki.certificateFromPem(pemCert).publicKey;
   }
 
   function getPublicKeyFromPrivateKey(pemKey) {
@@ -129,5 +123,6 @@
 
   document.getElementById('checkBtn').addEventListener('click', checkMatch);
 </script>
+
 </body>
 </html>
