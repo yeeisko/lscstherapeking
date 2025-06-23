@@ -8,29 +8,62 @@
 </head>
 <body>
   <h2>PEM and Key Matcher</h2>
-  <p>Paste your PEM certificate and private key below to check if they match.</p>
-  
+  <p>Paste your PEM certificate and private key or upload files to check if they match.</p>
+  
   <label for="pemInput">PEM Certificate (public key included)</label><br />
-  <textarea id="pemInput" rows="10" cols="70" placeholder="-----BEGIN CERTIFICATE-----..."></textarea><br /><br />
-  
+  <textarea id="pemInput" rows="10" cols="70" placeholder="-----BEGIN CERTIFICATE-----..."></textarea><br />
+  <input type="file" id="pemFile" accept=".pem,.crt" /><br /><br />
+  
   <label for="keyInput">Private Key</label><br />
-  <textarea id="keyInput" rows="10" cols="70" placeholder="-----BEGIN PRIVATE KEY-----..."></textarea><br /><br />
-  
+  <textarea id="keyInput" rows="10" cols="70" placeholder="-----BEGIN PRIVATE KEY-----..."></textarea><br />
+  <input type="file" id="keyFile" accept=".key,.pem" /><br /><br />
+  
   <button onclick="matchKeys()">Check Match</button>
-  
+  
   <p id="result" style="font-weight: bold; margin-top: 20px;"></p>
 
   <script>
+    function readFile(file, callback) {
+      const reader = new FileReader();
+      reader.onload = (e) => callback(e.target.result);
+      reader.onerror = () => callback(null);
+      reader.readAsText(file);
+    }
+
+    document.getElementById('pemFile').addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        readFile(file, (content) => {
+          if(content) document.getElementById('pemInput').value = content.trim();
+        });
+      }
+    });
+
+    document.getElementById('keyFile').addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        readFile(file, (content) => {
+          if(content) document.getElementById('keyInput').value = content.trim();
+        });
+      }
+    });
+
     function matchKeys() {
       const pemText = document.getElementById('pemInput').value.trim();
       const keyText = document.getElementById('keyInput').value.trim();
       const result = document.getElementById('result');
       result.textContent = '';
-      
+       
+      if (!pemText || !keyText) {
+        result.textContent = 'Please provide both PEM certificate and private key, either by pasting or file upload.';
+        result.style.color = 'red';
+        return;
+      }
+
       try {
         const cert = forge.pki.certificateFromPem(pemText);
         const publicKey = cert.publicKey;
-        
+
         let privateKey;
         try {
           privateKey = forge.pki.privateKeyFromPem(keyText);
@@ -39,8 +72,7 @@
           result.style.color = 'red';
           return;
         }
-        
-        // For RSA keys: compare modulus (n)
+
         if (publicKey.n && privateKey.n && publicKey.n.equals(privateKey.n)) {
           result.textContent = 'Keys Matched ✅';
           result.style.color = 'green';
