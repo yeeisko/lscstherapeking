@@ -1,128 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Certificate and Private Key Checker</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 2em 3em;
-    max-width: 700px;
-    color: #333;
-  }
-  label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.4em;
-    color: #555;
-  }
-  textarea {
-    width: 100%;
-    height: 400px;  /* increased height */
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 16px;  /* increased padding */
-    font-family: monospace;
-    font-size: 1.3rem;  /* increased font size */
-    resize: vertical;
-    box-sizing: border-box;
-    margin-bottom: 2.5em;
-  }
-  button {
-    background-color: #2f80ed;
-    color: white;
-    border: none;
-    padding: 1em 2em;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  button:hover {
-    background-color: #1366d6;
-  }
-  #result {
-    margin-top: 1.5em;
-    font-weight: bold;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PEM and Key Matcher</title>
+  <script src="https://cdn.jsdelivr.net/npm/node-forge@1.3.1/dist/forge.min.js"></script>
 </head>
 <body>
+  <h2>PEM and Key Matcher</h2>
+  <p>Paste your PEM certificate and private key below to check if they match.</p>
+  
+  <label for="pemInput">PEM Certificate (public key included)</label><br />
+  <textarea id="pemInput" rows="10" cols="70" placeholder="-----BEGIN CERTIFICATE-----..."></textarea><br /><br />
+  
+  <label for="keyInput">Private Key</label><br />
+  <textarea id="keyInput" rows="10" cols="70" placeholder="-----BEGIN PRIVATE KEY-----..."></textarea><br /><br />
+  
+  <button onclick="matchKeys()">Check Match</button>
+  
+  <p id="result" style="font-weight: bold; margin-top: 20px;"></p>
 
-<label for="pemInput">Enter your Certificate</label>
-<textarea id="pemInput" placeholder="-----BEGIN CERTIFICATE-----&#10;...&#10;-----END CERTIFICATE-----"></textarea>
-
-<label for="keyInput">Enter your Private Key</label>
-<textarea id="keyInput" placeholder="-----BEGIN PRIVATE KEY-----&#10;...&#10;-----END PRIVATE KEY-----"></textarea>
-
-<button id="checkBtn">Check Match</button>
-
-<div id="result"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/node-forge@1.3.1/dist/forge.min.js"></script>
-<script>
-  function getPublicKeyFromCert(pemCert) {
-    const forge = window.forge;
-    return forge.pki.certificateFromPem(pemCert).publicKey;
-  }
-
-  function getPublicKeyFromPrivateKey(pemKey) {
-    const forge = window.forge;
-    try {
-      const privKey = forge.pki.privateKeyFromPem(pemKey);
-      return privKey.publicKey || forge.pki.setRsaPublicKey(privKey.n, privKey.e);
-    } catch {
-      const privateKey = forge.pki.decryptRsaPrivateKey(pemKey, '');
-      if (!privateKey) throw new Error('Invalid private key format');
-      return forge.pki.setRsaPublicKey(privateKey.n, privateKey.e);
-    }
-  }
-
-  function getPublicKeyFingerprint(publicKey) {
-    const forge = window.forge;
-    const asn1 = forge.pki.publicKeyToAsn1(publicKey);
-    const der = forge.asn1.toDer(asn1).getBytes();
-    const md = forge.md.sha256.create();
-    md.update(der);
-    return md.digest().toHex();
-  }
-
-  function checkMatch() {
-    const pem = document.getElementById('pemInput').value.trim();
-    const key = document.getElementById('keyInput').value.trim();
-    const resultDiv = document.getElementById('result');
-    resultDiv.textContent = '';
-    resultDiv.style.color = 'black';
-
-    if (!pem || !key) {
-      resultDiv.textContent = 'Please provide both the certificate and private key.';
-      resultDiv.style.color = 'red';
-      return;
-    }
-
-    try {
-      const certPubKey = getPublicKeyFromCert(pem);
-      const privPubKey = getPublicKeyFromPrivateKey(key);
-
-      const certFingerprint = getPublicKeyFingerprint(certPubKey);
-      const privFingerprint = getPublicKeyFingerprint(privPubKey);
-
-      if (certFingerprint === privFingerprint) {
-        resultDiv.textContent = '✅ The private key matches the certificate.';
-        resultDiv.style.color = 'green';
-      } else {
-        resultDiv.textContent = '❌ The private key does NOT match the certificate.';
-        resultDiv.style.color = 'red';
+  <script>
+    function matchKeys() {
+      const pemText = document.getElementById('pemInput').value.trim();
+      const keyText = document.getElementById('keyInput').value.trim();
+      const result = document.getElementById('result');
+      result.textContent = '';
+      
+      try {
+        const cert = forge.pki.certificateFromPem(pemText);
+        const publicKey = cert.publicKey;
+        
+        let privateKey;
+        try {
+          privateKey = forge.pki.privateKeyFromPem(keyText);
+        } catch (e) {
+          result.textContent = 'Invalid private key format.';
+          result.style.color = 'red';
+          return;
+        }
+        
+        // For RSA keys: compare modulus (n)
+        if (publicKey.n && privateKey.n && publicKey.n.equals(privateKey.n)) {
+          result.textContent = 'Keys Matched ✅';
+          result.style.color = 'green';
+        } else {
+          result.textContent = 'Keys Did Not Match ❌';
+          result.style.color = 'red';
+        }
+      } catch (err) {
+        result.textContent = 'Error parsing inputs. Ensure valid PEM certificate and private key.';
+        result.style.color = 'red';
       }
-    } catch (e) {
-      resultDiv.textContent = 'Error parsing keys: ' + e.message;
-      resultDiv.style.color = 'red';
     }
-  }
-
-  document.getElementById('checkBtn').addEventListener('click', checkMatch);
-&lt;/script>
-
+  </script>
 </body>
 </html>
