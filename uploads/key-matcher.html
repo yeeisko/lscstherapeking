@@ -3,75 +3,67 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PEM and Key Matcher</title>
-  <script src="https://cdn.jsdelivr.net/npm/node-forge@1.3.1/dist/forge.min.js"></script>
+  <title>PEM Certificate & Private Key Matcher</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/0.10.0/forge.min.js"></script>
   <style>
     body {
-      background: linear-gradient(135deg, #9c27b0, #121212, #1892bc);
-      color: #d0b9db;
       font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    h2, p {
-      color: #bb59b1;
-    }
-    #result {
-      font-weight: bold;
-      margin-top: 20px;
-      color: #00bfff; /* Bright blue */
-      text-shadow:
-        0 0 5px #00bfff,
-        0 0 10px #00bfff,
-        0 0 20px #00bfff,
-        0 0 40px #1e90ff,
-        0 0 80px #1e90ff;
-    }
-    button {
-      background: linear-gradient(90deg, #3168f0, #1ab4cc);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 5px;
-      box-shadow:
-        0 0 5px #00bfff,
-        0 0 10px #1e90ff;
-      transition: box-shadow 0.3s ease;
-    }
-    button:hover {
-      box-shadow:
-        0 0 10px #00bfff,
-        0 0 20px #1e90ff,
-        0 0 30px #00bfff;
-    }
-    label {
-      color: #bb59b1;
-      font-weight: bold;
+      margin: 2rem;
+      background: #1e1e1e;
+      color: #eee;
     }
     textarea {
-      background-color: #1a1a1a;
-      color: #d0b9db;
-      border: 1px solid #6f3fa0;
-      border-radius: 5px;
-      padding: 10px;
+      width: 100%;
+      max-width: 600px;
+      height: 150px;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
       font-family: monospace;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      border: none;
+      background-color: #2c2c2c;
+      color: #eee;
+      resize: vertical;
+    }
+    button {
+      padding: 0.5rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      background-color: #0d6efd;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #084cd0;
+    }
+    #result {
+      margin-top: 1rem;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.3rem;
     }
   </style>
 </head>
 <body>
-  <h2>PEM and Key Matcher</h2>
-  <p>Paste your PEM certificate and private key below to check if they match.</p>
-  
-  <label for="pemInput">PEM Certificate (public key included)</label><br />
-  <textarea id="pemInput" rows="10" cols="70" placeholder="-----BEGIN CERTIFICATE-----..."></textarea><br /><br />
-  
-  <label for="keyInput">Private Key</label><br />
-  <textarea id="keyInput" rows="10" cols="70" placeholder="-----BEGIN PRIVATE KEY-----..."></textarea><br /><br />
-  
-  <button onclick="matchKeys()">Check Match</button>
-  
-  <p id="result"></p>
+
+  <h1>PEM Certificate & Private Key Matcher</h1>
+
+  <label for="pemInput">Paste PEM Certificate here</label>
+  <textarea id="pemInput" placeholder="-----BEGIN CERTIFICATE-----&#10;...&#10;-----END CERTIFICATE-----"></textarea>
+
+  <label for="keyInput">Paste Private Key here</label>
+  <textarea id="keyInput" placeholder="-----BEGIN PRIVATE KEY-----&#10;...&#10;-----END PRIVATE KEY-----"></textarea>
+
+  <button onclick="matchKeys()">Match Keys</button>
+
+  <div id="result"></div>
 
   <script>
     function matchKeys() {
@@ -79,28 +71,40 @@
       const keyText = document.getElementById('keyInput').value.trim();
       const result = document.getElementById('result');
       result.textContent = '';
-      
+      result.style.color = '';
+
       try {
         const cert = forge.pki.certificateFromPem(pemText);
         const publicKey = cert.publicKey;
-        
+
         let privateKey;
         try {
           privateKey = forge.pki.privateKeyFromPem(keyText);
         } catch (e) {
           result.textContent = 'Invalid private key format.';
+          result.style.color = 'red';
           return;
         }
-        
-        if (publicKey.n && privateKey.n && publicKey.n.equals(privateKey.n)) {
+
+        if (!publicKey.n || !privateKey.n) {
+          result.textContent = 'Keys are not RSA format.';
+          result.style.color = 'red';
+          return;
+        }
+
+        if (publicKey.n.equals(privateKey.n)) {
           result.textContent = 'Keys Matched ✅';
+          result.style.color = 'lightgreen';
         } else {
           result.textContent = 'Keys Did Not Match ❌';
+          result.style.color = 'red';
         }
-      } catch {
+      } catch (e) {
         result.textContent = 'Error parsing inputs. Ensure valid PEM certificate and private key.';
+        result.style.color = 'red';
       }
     }
   </script>
+
 </body>
 </html>
