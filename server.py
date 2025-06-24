@@ -14,5 +14,10 @@ def serve_index2():
 def serve_key_matcher():
     return send_from_directory('uploads', 'key-matcher.html')
 
+# Added route for app-access.html
+@app.route('/uploads/app-access.html')
+def serve_app_access():
+    return send_from_directory('uploads', 'app-access.html')
+
 if __name__ == '__main__':  # corrected to __name__ and __main__
     app.run(host='0.0.0.0', port=5000)
