@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>plist links retriever</title>
+</head>
+<body>
+  <h3>Check website for plist links</h3>
+  <input type="text" id="urlInput" placeholder="Enter website URL" style="width: 300px;" />
+  <button id="checkBtn">Check</button>
+  <p id="result"></p>
+
+  <script>
+    document.getElementById('checkBtn').onclick = async function () {
+      let url = document.getElementById('urlInput').value.trim();
+      const resultEl = document.getElementById('result');
+      resultEl.textContent = 'Loading...';
+
+      // Add https:// if missing
+      if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+      }
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to fetch the URL');
+
+        const text = await response.text();
+
+        // Regex to find any links ending with .plist (with or without itms)
+        // Match URLs that start optionally with itms or http(s), then anything ending with .plist
+        // This regex tries to capture URLs within href/src or raw text
+        const regex = /(?:itms[-a-z]*:|https?:\/\/)?[^"' >]*\.plist\b/gim;
+        const matches = text.match(regex);
+
+        if (matches && matches.length > 0) {
+          // Remove duplicates and trim
+          const uniqueMatches = [...new Set(matches.map(m => m.trim()))];
+          resultEl.textContent = 'Found plist link(s): ' + uniqueMatches.join(', ');
+        } else {
+          resultEl.textContent = 'No plist links found.';
+        }
+      } catch (error) {
+        resultEl.textContent = 'Error: ' + error.message + '. CORS restrictions may block requests to other sites.';
+      }
+    };
+  </script>
+</body>
+</html>
