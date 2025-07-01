@@ -10,9 +10,9 @@ def serve_index():
 def serve_index2():
     return send_from_directory('uploads', 'index1.html')
 
-@app.route('/uploads/plist.html')
+@app.route('/uploads/test.html')
 def serve_key_matcher():
-    return send_from_directory('uploads', 'plist.html')
+    return send_from_directory('uploads', 'test.html')
 
 # Serve app-access.html from the current directory instead of uploads
 @app.route('/app-access.html')
