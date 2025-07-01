@@ -27,26 +27,30 @@ document.getElementById('zipForm').addEventListener('submit', async e => {
   const files = document.getElementById('files').files;
   const zipNameInput = document.getElementById('zipName').value.trim();
 
+  // Set max number of files to accept
+  const maxFiles = 5;
+
   if (!zipNameInput) {
     alert('Please enter a valid zip file name');
     return;
   }
-  if (!files.length) {
+  if (files.length === 0) {
     alert('Please select at least one file');
+    return;
+  }
+  if (files.length > maxFiles) {
+    alert(`Please upload no more than ${maxFiles} files`);
     return;
   }
 
   const zip = new JSZip();
 
-  // Add all uploaded files to the zip folder root
   for (const file of files) {
     const content = await file.arrayBuffer();
     zip.file(file.name, content);
   }
 
-  // Generate the zip blob
   zip.generateAsync({ type: "blob" }).then(content => {
-    // Create a temporary link to auto-trigger download
     const link = document.createElement('a');
     link.href = URL.createObjectURL(content);
     link.download = zipNameInput + '.zip';
