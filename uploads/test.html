@@ -1,51 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Upload and Zip Files</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Upload and Zip Files</title>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 </head>
 <body>
-  <h2>Upload Files and Create Zip</h2>
-  <form id="zipForm">
-    <label for="zipName">Zip filename (without .zip):</label><br />
-    <input type="text" id="zipName" name="zipName" value="adhoc" required /><br /><br />
-    <label for="files">Select files:</label><br />
-    <input type="file" id="files" name="files" multiple required /><br /><br />
-    <button type="submit">Create Zip</button>
-  </form>
+<h2>Upload files and download as ZIP</h2>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script>
-    const form = document.getElementById('zipForm');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+<form id="zipForm">
+  <input type="file" id="files" multiple required /><br /><br />
+  <input 
+    type="text" 
+    id="zipName" 
+    placeholder="Enter zip file name (without .zip)" 
+    required 
+  />
+  <button type="submit">Create ZIP and Download</button>
+</form>
 
-      const zipName = document.getElementById('zipName').value.trim() || 'adhoc';
-      const inputFiles = document.getElementById('files').files;
-      if (inputFiles.length === 0) {
-        alert('Please select files to zip.');
-        return;
-      }
+<script>
+document.getElementById('zipForm').addEventListener('submit', async e => {
+  e.preventDefault();
 
-      const zip = new JSZip();
+  const files = document.getElementById('files').files;
+  const zipNameInput = document.getElementById('zipName').value.trim();
 
-      for (const file of inputFiles) {
-        // Read file as array buffer
-        const content = await file.arrayBuffer();
-        zip.file(file.name, content);
-      }
+  if (!zipNameInput) {
+    alert('Please enter a valid zip file name');
+    return;
+  }
+  if (!files.length) {
+    alert('Please select at least one file');
+    return;
+  }
 
-      const blob = await zip.generateAsync({ type: 'blob' });
+  const zip = new JSZip();
 
-      // Create a download link
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = zipName + '.zip';
-      link.click();
+  // Add all uploaded files to the zip folder root
+  for (const file of files) {
+    const content = await file.arrayBuffer();
+    zip.file(file.name, content);
+  }
 
-      // Cleanup
-      URL.revokeObjectURL(link.href);
-    });
-  </script>
+  // Generate the zip blob
+  zip.generateAsync({ type: "blob" }).then(content => {
+    // Create a temporary link to auto-trigger download
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(content);
+    link.download = zipNameInput + '.zip';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  });
+});
+</script>
+
 </body>
 </html>
