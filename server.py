@@ -1,6 +1,6 @@
 from flask import Flask, send_from_directory
 
-app = Flask(name)
+app = Flask(__name__)
 
 @app.route('/')
 def serve_index():
@@ -19,5 +19,5 @@ def serve_key_matcher():
 def serve_app_access():
     return send_from_directory('.', 'app-access.html')
 
-if name == 'main':
+if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
