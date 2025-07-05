@@ -1,65 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Upload and Zip Files</title>
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <meta charset="UTF-8">
+  <title>URL Shortener - No API Key</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
 </head>
 <body>
-<h2>Upload files and download as ZIP</h2>
+  <h2>🔗 Free URL Shortener (is.gd)</h2>
+  <input type="text" id="urlInput" placeholder="Enter any URL (e.g. example.com)">
+  <button onclick="shortenURL()">Shorten Link</button>
+  <div id="result"></div>
 
-<form id="zipForm">
-  <input type="file" id="files" multiple required /><br /><br />
-  <input 
-    type="text" 
-    id="zipName" 
-    placeholder="Enter zip file name (without .zip)" 
-    required 
-  />
-  <button type="submit">Create ZIP and Download</button>
-</form>
+  <script>
+    async function shortenURL() {
+      let url = document.getElementById("urlInput").value.trim();
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "⏳ Shortening...";
 
-<script>
-document.getElementById('zipForm').addEventListener('submit', async e => {
-  e.preventDefault();
+      if (!url) {
+        resultDiv.innerHTML = "❌ Please enter a URL.";
+        return;
+      }
 
-  const files = document.getElementById('files').files;
-  const zipNameInput = document.getElementById('zipName').value.trim();
+      // Add scheme if missing
+      if (!/^https?:\/\//i.test(url)) {
+        url = "http://" + url;
+      }
 
-  // Set max number of files to accept
-  const maxFiles = 5;
+      try {
+        const apiUrl = `https://is.gd/create.php?format=simple&url=${encodeURIComponent(url)}`;
+        const response = await fetch(apiUrl);
+        const shortUrl = await response.text();
 
-  if (!zipNameInput) {
-    alert('Please enter a valid zip file name');
-    return;
-  }
-  if (files.length === 0) {
-    alert('Please select at least one file');
-    return;
-  }
-  if (files.length > maxFiles) {
-    alert(`Please upload no more than ${maxFiles} files`);
-    return;
-  }
-
-  const zip = new JSZip();
-
-  for (const file of files) {
-    const content = await file.arrayBuffer();
-    zip.file(file.name, content);
-  }
-
-  zip.generateAsync({ type: "blob" }).then(content => {
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(content);
-    link.download = zipNameInput + '.zip';
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  });
-});
-</script>
-
+        if (shortUrl.startsWith("http")) {
+          resultDiv.innerHTML = `✅ Shortened Link: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
+        } else {
+          resultDiv.innerHTML = `❌ Error: ${shortUrl}`;
+        }
+      } catch (error) {
+        console.error(error);
+        resultDiv.innerHTML = "❌ Failed to shorten the link. Please try again.";
+      }
+    }
+  </script>
 </body>
 </html>
