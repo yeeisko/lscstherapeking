@@ -1,374 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="lscs3 - iOS Certificate Cracker and Content Creator. Download signed iOS apps, certificates, and access ESign bypass tools." />
-  <meta name="keywords" content="lscs3, iOS certificates, cert cracker, KRNL iOS, Delta iOS, ESign bypass, iOS apps, certificate cracking" />
-  <meta name="author" content="lscs3" />
-  <meta property="og:title" content="lscs3 | Telegram Links" />
-  <meta property="og:description" content="Access iOS certificate cracking tools, signed apps, and join our Telegram community." />
-  <meta property="og:image" content="https://github.com/lscs3/lscs3apps/blob/main/IMG_20250320_000350_328.png?raw=true" />
-  <meta property="og:url" content="https://lscstherapeking.xyz" />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@lscs3" />
-  <meta name="twitter:creator" content="@lscs3" />
-  <meta name="twitter:title" content="lscs3 | Telegram Links" />
-  <meta name="twitter:description" content="iOS Certificate Cracker - Download signed apps and certificates" />
-  <meta name="twitter:image" content="https://github.com/lscs3/lscs3apps/blob/main/IMG_20250320_000350_328.png?raw=true" />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://lscstherapeking.xyz" />
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "lscs3 | Telegram Links",
-      "description": "iOS Certificate Cracker - Download signed apps and certificates",
-      "url": "https://lscstherapeking.xyz",
-      "image": "https://github.com/lscs3/lscs3apps/blob/main/IMG_20250320_000350_328.png?raw=true",
-      "author": {
-        "@type": "Person",
-        "name": "lscs3"
-      }
-    }
-  </script>
-  <title>lscs3 | Telegram Links - iOS Certificate Cracker</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script>
-  //cocoloud api for cert stats and more to be added if you want 
-    async function fetchCertStatus() {
-      try {
-        const response = await fetch('https://api.cococloud-signing.online/cert-status/api', {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        
-        const data = await response.json();
-        
-        const statusElement = document.getElementById('cert-status');
-        const statusBadge = document.getElementById('status-badge');
-        const certName = document.getElementById('cert-name');
-        const expiryDate = document.getElementById('expiry-date');
-        const appIdName = document.getElementById('app-id-name');
-        const loader = document.getElementById('status-loader');
-        const downloadBtn = document.getElementById('cert-download-btn');
-        
-        loader.classList.add('hidden');
-        
-        certName.textContent = data.CertificateName || 'Unknown Certificate';
-        appIdName.textContent = data.AppIDName || 'Unknown App';
-        
-        if (data['certdownload-cert-files']) {
-          downloadBtn.href = data['certdownload-cert-files'];
-          downloadBtn.classList.remove('hidden');
-        } else {
-          downloadBtn.classList.add('hidden');
-        }
-        
-        if (data.CertificateStatus === 'Revoked') {
-          statusBadge.innerHTML = '<i class="fas fa-times-circle mr-1"></i> Revoked';
-          statusBadge.className = 'px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-xs font-semibold flex items-center';
-          expiryDate.innerHTML = `<i class="fas fa-calendar-times mr-1"></i> Revoked: ${new Date(data.RevocationDate).toLocaleDateString()}`;
-        } else if (data.CertificateStatus === 'Signed') {
-          statusBadge.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Signed';
-          statusBadge.className = 'px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold flex items-center';
-          expiryDate.innerHTML = `<i class="fas fa-calendar-check mr-1"></i> Expires: ${new Date(data.ExpirationDate).toLocaleDateString()}`;
-        } else {
-          statusBadge.innerHTML = '<i class="fas fa-question-circle mr-1"></i> ' + data.CertificateStatus;
-          statusBadge.className = 'px-3 py-1 bg-yellow-500/20 text-yellow-400 rounded-full text-xs font-semibold flex items-center';
-          expiryDate.innerHTML = `<i class="fas fa-calendar mr-1"></i> Expires: ${new Date(data.ExpirationDate).toLocaleDateString()}`;
-        }
-        
-        statusElement.classList.remove('hidden');
-      } catch (error) {
-        console.error('Failed to fetch certificate status:', error);
-        document.getElementById('status-loader').innerHTML = '<p class="text-red-400 text-sm"><i class="fas fa-exclamation-triangle mr-2"></i>Failed to load certificate status</p>';
-        const downloadBtn = document.getElementById('cert-download-btn');
-        if (downloadBtn) downloadBtn.classList.add('hidden');
-      }
-    }
-    
-    window.addEventListener('load', fetchCertStatus);
-  </script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          animation: {
-            'gradient': 'gradient 8s ease infinite',
-            'float': 'float 6s ease-in-out infinite',
-            'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
-            'orb': 'orb 20s ease-in-out infinite',
-            'orb-reverse': 'orbReverse 25s ease-in-out infinite',
-          },
-          keyframes: {
-            gradient: {
-              '0%, 100%': {
-                'background-position': '0% 50%'
-              },
-              '50%': {
-                'background-position': '100% 50%'
-              }
-            },
-            float: {
-              '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-20px)' }
-            },
-            pulseGlow: {
-              '0%, 100%': { opacity: '0.5' },
-              '50%': { opacity: '1' }
-            },
-            orb: {
-              '0%': { transform: 'translate(0, 0) scale(1)' },
-              '33%': { transform: 'translate(30%, -50%) scale(1.1)' },
-              '66%': { transform: 'translate(-20%, 40%) scale(0.9)' },
-              '100%': { transform: 'translate(0, 0) scale(1)' }
-            },
-            orbReverse: {
-              '0%': { transform: 'translate(0, 0) scale(1)' },
-              '33%': { transform: 'translate(-30%, 50%) scale(0.9)' },
-              '66%': { transform: 'translate(20%, -40%) scale(1.1)' },
-              '100%': { transform: 'translate(0, 0) scale(1)' }
-            }
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    body {
-      background: #000;
-      position: relative;
-      overflow-x: hidden;
-    }
-    
-    .bg-animated {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, #000, #111, #000);
-      z-index: 0;
-    }
-    
-    .color-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.7;
-      mix-blend-mode: screen;
-    }
-    
-    .orb1 {
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, #ff006e, #8338ec);
-      top: -20%;
-      left: -10%;
-      animation: orb 20s ease-in-out infinite;
-    }
-    
-    .orb2 {
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, #3a86ff, #06ffa5);
-      bottom: -20%;
-      right: -10%;
-      animation: orb-reverse 25s ease-in-out infinite;
-    }
-    
-    .orb3 {
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, #ffbe0b, #fb5607);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      animation: orb 30s ease-in-out infinite;
-    }
-    
-    .glow {
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-    }
-    
-    .glow:hover {
-      box-shadow: 0 0 40px rgba(255, 255, 255, 0.2), 0 0 80px rgba(255, 255, 255, 0.1);
-      transform: translateY(-2px);
-    }
-    
-    .gradient-border {
-      position: relative;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #667eea 100%);
-      background-size: 400% 400%;
-      animation: gradient 15s ease infinite;
-      padding: 2px;
-      border-radius: 24px;
-    }
-    
-    .gradient-border-inner {
-      background: rgba(0, 0, 0, 0.95);
-      border-radius: 22px;
-      padding: 2rem;
-    }
-    
-    .button-gradient {
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-    
-    .button-gradient::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s ease;
-    }
-    
-    .button-gradient:hover::before {
-      left: 100%;
-    }
-    
-    .status-card {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Secure File Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #responseBox {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+    }
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+  </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
-  <div class="bg-animated">
-    <div class="color-orb orb1"></div>
-    <div class="color-orb orb2"></div>
-    <div class="color-orb orb3"></div>
-  </div>
-  
-  <div class="relative z-10 gradient-border max-w-2xl w-full">
-    <div class="gradient-border-inner">
-      <div class="flex flex-col items-center mb-8">
-        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-purple-500/30 shadow-2xl mb-4 animate-float glow">
-          <img src="https://github.com/lscs3/lscs3apps/blob/main/IMG_20250320_000350_328.png?raw=true" alt="lscs3 Profile Picture" class="w-full h-full object-cover">
-        </div>
-        <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 mb-2">@lscs3</h1>
-        <p class="text-gray-400 text-sm mb-4">Cert cracker & Content Creator</p>
-        <div class="flex gap-4 text-gray-500">
-          <span class="flex items-center gap-1 text-sm">
-            <i class="fas fa-users text-purple-400"></i>
-            1.2K members
-          </span>
-          <span class="flex items-center gap-1 text-sm">
-            <i class="fas fa-code text-pink-400"></i>
-            iOS cert cracker
-          </span>
-        </div>
-      </div>
-      
-      <div class="w-full h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent mb-8"></div>
-      
-      <div id="status-loader" class="mb-6 text-center">
-        <div class="inline-flex items-center gap-2 text-gray-400">
-          <i class="fas fa-spinner fa-spin text-purple-400"></i>
-          <span class="text-sm">Loading certificate status...</span>
-        </div>
-      </div>
-      
-      <div id="cert-status" class="hidden mb-8 status-card rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-white flex items-center gap-2">
-            <i class="fas fa-certificate text-purple-400"></i>
-            Certificate Status
-          </h2>
-          <span id="status-badge" class="px-3 py-1 bg-gray-500/20 text-gray-400 rounded-full text-xs font-semibold"></span>
-        </div>
-        <div class="space-y-2 text-sm">
-          <div class="text-gray-300">
-            <span class="text-gray-500">Certificate:</span> <span id="cert-name" class="font-medium"></span>
-          </div>
-          <div class="text-gray-300">
-            <span class="text-gray-500">MP Name:</span> <span id="app-id-name" class="font-medium"></span>
-          </div>
-          <div class="text-gray-300" id="expiry-date"></div>
-        </div>
-        <div class="mt-4">
-          <a id="cert-download-btn" href="#" target="_blank" 
-             class="hidden inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600/20 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/30 text-purple-400 rounded-lg transition-all duration-300 text-sm font-medium border border-purple-500/20 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/20 button-gradient">
-            <i class="fas fa-download"></i>
-            Download Certificate Files
-          </a>
-        </div>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        
-        <button onclick="window.open('https://t.me/lscs3', '_blank')" 
-                class="button-gradient bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">
-          <span class="relative z-10 flex items-center justify-center gap-3">
-            <i class="fab fa-telegram text-xl"></i>
-            my telegram
-          </span>
-        </button>
-        
-        <button onclick="window.open('https://t.me/p12Cracking1', '_blank')"
-                class="button-gradient bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">
-          <span class="relative z-10 flex items-center justify-center gap-3">
-            <i class="fas fa-broadcast-tower text-xl"></i>
-            my channel
-          </span>
-        </button>
-        
-        <button onclick="window.location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/marugagicaru/PlistFiles/refs/heads/main/KRNL.plist'"
-                class="button-gradient bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">
-          <span class="relative z-10 flex items-center justify-center gap-3">
-            <i class="fab fa-app-store-ios text-xl"></i>
-            KRNL iOS - Signed
-          </span>
-        </button>
-        
-        <button onclick="window.open('https://github.com/lscs3/KRNL/raw/refs/heads/main/44Certificates%20(Read%20ReadMe.txt%20for%20pass%20and%20more).zip', '_blank')"
-                class="button-gradient bg-gradient-to-r from-orange-600 to-amber-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">
-          <span class="relative z-10 flex items-center justify-center gap-3">
-            <i class="fas fa-certificate text-xl"></i>
-            44 Expired Certificates
-          </span>
-        </button>
-        
-        <button onclick="window.location.href='itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/lscs3/PlistFiles/refs/heads/main/Delta.plist'"
-                class="button-gradient bg-gradient-to-r from-pink-600 to-rose-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">
-          <span class="relative z-10 flex items-center justify-center gap-3">
-            <i class="fab fa-app-store-ios text-xl"></i>
-            Delta iOS - Signed
-          </span>
-        </button>
-        
-        <button onclick="window.location.href='https://lscstherapeking.xyz/uploads/index1.html'"
-                class="button-gradient bg-gradient-to-r from-red-600 to-crimson-600 text-white font-semibold py-4 px-6 rounded-xl transform hover:scale-105 transition-all duration-300 glow">
-          <span class="relative z-10 flex items-center justify-center gap-3">
-            <i class="fas fa-shield-alt text-xl"></i>
-            ESign Bypass Revoke
-          </span>
-        </button>
-        
-      </div>
-      
-      <footer class="mt-8 pt-6 border-t border-gray-800">
-        <p class="text-center text-gray-500 text-sm">
-          Re-designed By <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 font-semibold">NabzClan</span>
-        </p>
-      </footer>
-    </div>
-  </div>
+<body>
+  <h2>Upload a File</h2>
+  <form id="uploadForm">
+    <input type="file" id="fileInput" name="file" required>
+    <button type="submit">Upload</button>
+  </form>
+
+  <div id="responseBox"></div>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    const responseBox = document.getElementById('responseBox');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        responseBox.innerHTML = '<p class="error">Please select a file.</p>';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('https://europe.serenityios.com/dashboard-lscs3/upload.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          const fileInfo = data.data;
+          responseBox.innerHTML = `
+            <p class="success"><strong>${data.message}</strong></p>
+            <ul>
+              <li><strong>Original Filename:</strong> ${fileInfo.original_filename}</li>
+              <li><strong>Saved Filename:</strong> ${fileInfo.saved_filename}</li>
+              <li><strong>File URL:</strong> <a href="${fileInfo.file_url}" target="_blank">${fileInfo.file_url}</a></li>
+              <li><strong>File Size:</strong> ${(fileInfo.file_size / 1024).toFixed(2)} KB</li>
+              <li><strong>Upload Time:</strong> ${fileInfo.upload_time}</li>
+            </ul>
+          `;
+        } else {
+          responseBox.innerHTML = <p class="error"><strong>Error:</strong> ${data.error}</p>;
+        }
+      } catch (error) {
+        responseBox.innerHTML = <p class="error"><strong>Upload failed:</strong> ${error.message}</p>;
+      }
+    });
+  </script>
 </body>
-          </html>
+</html>
