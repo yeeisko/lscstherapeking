@@ -7,33 +7,126 @@
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .upload-container {
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      background-color: #f9f9f9;
+      margin-bottom: 20px;
+    }
+    .upload-container:hover {
+      border-color: #007bff;
+      background-color: #f0f8ff;
+    }
+    input[type="file"] {
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 100%;
+      max-width: 400px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
     }
     #responseBox {
       margin-top: 20px;
       padding: 15px;
       border: 1px solid #ccc;
       background-color: #f9f9f9;
+      border-radius: 4px;
+      min-height: 50px;
     }
     .success {
-      color: green;
+      color: #28a745;
+      background-color: #d4edda;
+      border-color: #c3e6cb;
     }
     .error {
-      color: red;
+      color: #dc3545;
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+    }
+    .info {
+      color: #17a2b8;
+      background-color: #d1ecf1;
+      border-color: #bee5eb;
+    }
+    .file-info {
+      background-color: white;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+    .file-info ul {
+      list-style: none;
+      padding: 0;
+    }
+    .file-info li {
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .file-info li:last-child {
+      border-bottom: none;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: #f0f0f0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 10px 0;
+      display: none;
+    }
+    .progress-fill {
+      height: 100%;
+      background-color: #007bff;
+      transition: width 0.3s ease;
     }
   </style>
 </head>
 <body>
-  <h2>Upload a File</h2>
-  <form id="uploadForm">
-    <input type="file" id="fileInput" name="file" required>
-    <button type="submit">Upload</button>
-  </form>
+  <h2>🔒 Secure File Upload</h2>
+  <div class="upload-container">
+    <form id="uploadForm">
+      <h3>Select a file to upload</h3>
+      <input type="file" id="fileInput" name="file" required>
+      <br>
+      <button type="submit" id="uploadBtn">Upload File</button>
+    </form>
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
 
-  <div id="responseBox"></div>
+  <div id="responseBox">
+    <p class="info">Select a file and click upload to begin.</p>
+  </div>
 
   <script>
     const form = document.getElementById('uploadForm');
     const responseBox = document.getElementById('responseBox');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const progressBar = document.getElementById('progressBar');
+    const progressFill = document.getElementById('progressFill');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -42,38 +135,98 @@
       const file = fileInput.files[0];
 
       if (!file) {
-        responseBox.innerHTML = '<p class="error">Please select a file.</p>';
+        showResponse('Please select a file.', 'error');
         return;
       }
+
+      // Show upload progress
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = 'Uploading...';
+      progressBar.style.display = 'block';
+      progressFill.style.width = '0%';
+      
+      showResponse('Uploading file, please wait...', 'info');
 
       const formData = new FormData();
       formData.append('file', file);
 
       try {
-        const res = await fetch('https://europe.serenityios.com/dashboard-lscs3/upload.php', {
-          method: 'POST',
-          body: formData
+        const xhr = new XMLHttpRequest();
+        
+        // Progress tracking
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable) {
+            const percentComplete = (e.loaded / e.total) * 100;
+            progressFill.style.width = percentComplete + '%';
+          }
         });
 
-        const data = await res.json();
+        xhr.onload = function() {
+          progressBar.style.display = 'none';uploadBtn.disabled = false;
+          uploadBtn.textContent = 'Upload File';
+          
+          try {
+            const data = JSON.parse(xhr.responseText);
+            
+            if (data.success) {
+              const fileInfo = data.data;
+              const successHtml = `
+                <div>
+                  <p><strong>✅ ${data.message}</strong></p>
+                  <div class="file-info">
+                    <ul>
+                      <li><strong>Original Filename:</strong> ${fileInfo.original_filename}</li>
+                      <li><strong>Saved Filename:</strong> ${fileInfo.saved_filename}</li>
+                      <li><strong>File URL:</strong> <a href="${fileInfo.file_url}" target="_blank">${fileInfo.file_url}</a></li>
+                      <li><strong>File Size:</strong> ${(fileInfo.file_size / 1024).toFixed(2)} KB</li>
+                      <li><strong>Upload Time:</strong> ${fileInfo.upload_time}</li>
+                    </ul>
+                  </div>
+                </div>
+              `;
+              showResponse(successHtml, 'success');
+            } else {
+              showResponse(`❌ Error: ${data.error}`, 'error');
+            }
+          } catch (parseError) {
+            showResponse(`❌ Upload failed: Invalid server response`, 'error');
+          }
+        };
 
-        if (data.success) {
-          const fileInfo = data.data;
-          responseBox.innerHTML = `
-            <p class="success"><strong>${data.message}</strong></p>
-            <ul>
-              <li><strong>Original Filename:</strong> ${fileInfo.original_filename}</li>
-              <li><strong>Saved Filename:</strong> ${fileInfo.saved_filename}</li>
-              <li><strong>File URL:</strong> <a href="${fileInfo.file_url}" target="_blank">${fileInfo.file_url}</a></li>
-              <li><strong>File Size:</strong> ${(fileInfo.file_size / 1024).toFixed(2)} KB</li>
-              <li><strong>Upload Time:</strong> ${fileInfo.upload_time}</li>
-            </ul>
-          `;
-        } else {
-          responseBox.innerHTML = <p class="error"><strong>Error:</strong> ${data.error}</p>;
-        }
+        xhr.onerror = function() {
+          progressBar.style.display = 'none';
+          uploadBtn.disabled = false;
+          uploadBtn.textContent = 'Upload File';
+          showResponse('❌ Network error occurred during upload', 'error');
+        };
+
+        xhr.open('POST', 'https://europe.serenityios.com/dashboard-lscs3/upload.php');
+        xhr.send(formData);
+
       } catch (error) {
-        responseBox.innerHTML = <p class="error"><strong>Upload failed:</strong> ${error.message}</p>;
+        progressBar.style.display = 'none';
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = 'Upload File';
+        showResponse(`❌ Upload failed: ${error.message}`, 'error');
+      }
+    });
+
+    function showResponse(message, type) {
+      responseBox.innerHTML = <div class="${type}">${message}</div>;
+      responseBox.className = ${type};
+    }
+
+    // File input change event for validation
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSize) {
+          showResponse('❌ File too large. Maximum size is 10MB.', 'error');
+          e.target.value = '';
+        } else {
+          showResponse(`📄 Selected: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`, 'info');
+        }
       }
     });
   </script>
