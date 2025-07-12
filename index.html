@@ -221,7 +221,10 @@
     document.getElementById('fileInput').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
-        const maxSize = 10 * 1024 * 1024; // 10MB
+        const maxSize = 2 * 1024 * 1024 * 1024; // 2GB
+
+
+
         if (file.size > maxSize) {
           showResponse('❌ File too large. Maximum size is 10MB.', 'error');
           e.target.value = '';
