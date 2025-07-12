@@ -104,7 +104,7 @@
   </style>
 </head>
 <body>
-  <h2>🔒 Secure File Upload</h2>
+  <h2>ð Secure File Upload</h2>
   <div class="upload-container">
     <form id="uploadForm">
       <h3>Select a file to upload</h3>
@@ -173,7 +173,7 @@
               const fileInfo = data.data;
               const successHtml = `
                 <div>
-                  <p><strong>✅ ${data.message}</strong></p>
+                  <p><strong>â ${data.message}</strong></p>
                   <div class="file-info">
                     <ul>
                       <li><strong>Original Filename:</strong> ${fileInfo.original_filename}</li>
@@ -187,10 +187,10 @@
               `;
               showResponse(successHtml, 'success');
             } else {
-              showResponse(`❌ Error: ${data.error}`, 'error');
+              showResponse(`â Error: ${data.error}`, 'error');
             }
           } catch (parseError) {
-            showResponse(`❌ Upload failed: Invalid server response`, 'error');
+            showResponse(`â Upload failed: Invalid server response`, 'error');
           }
         };
 
@@ -198,7 +198,7 @@
           progressBar.style.display = 'none';
           uploadBtn.disabled = false;
           uploadBtn.textContent = 'Upload File';
-          showResponse('❌ Network error occurred during upload', 'error');
+          showResponse('â Network error occurred during upload', 'error');
         };
 
         xhr.open('POST', 'https://europe.serenityios.com/dashboard-lscs3/upload.php');
@@ -208,7 +208,7 @@
         progressBar.style.display = 'none';
         uploadBtn.disabled = false;
         uploadBtn.textContent = 'Upload File';
-        showResponse(`❌ Upload failed: ${error.message}`, 'error');
+        showResponse(`â Upload failed: ${error.message}`, 'error');
       }
     });
 
@@ -221,15 +221,12 @@
     document.getElementById('fileInput').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (file) {
-        const maxSize = 2 * 1024 * 1024 * 1024; // 2GB
-
-
-
+        const maxSize = 10 * 1024 * 1024; // 10MB
         if (file.size > maxSize) {
-          showResponse('❌ File too large. Maximum size is 10MB.', 'error');
+          showResponse('â File too large. Maximum size is 10MB.', 'error');
           e.target.value = '';
         } else {
-          showResponse(`📄 Selected: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`, 'info');
+          showResponse(`ð Selected: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`, 'info');
         }
       }
     });
