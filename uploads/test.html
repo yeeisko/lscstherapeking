@@ -1,64 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>URL Shortener - TinyURL API</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      margin: 10px 0;
-    }
-    #result {
-      margin-top: 20px;
-      font-size: 18px;
-    }
-  </style>
-</head>
-<body>
-  <h2>🔗 TinyURL Link Shortener</h2>
-  <input type="text" id="urlInput" placeholder="Enter any URL (e.g. example.com)">
-  <button onclick="shortenURL()">Shorten Link</button>
-  <div id="result"></div>
-
-  <script>
-    async function shortenURL() {
-      let url = document.getElementById("urlInput").value.trim();
-      const resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = "⏳ Shortening...";
-
-      if (!url) {
-        resultDiv.innerHTML = "❌ Please enter a URL.";
-        return;
-      }
-
-      // Add scheme if missing
-      if (!/^https?:\/\//i.test(url)) {
-        url = "http://" + url;
-      }
-
-      try {
-        const apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`;
-        const response = await fetch(apiUrl);
-        const shortUrl = await response.text();
-
-        if (shortUrl.startsWith("http")) {
-          resultDiv.innerHTML = `✅ Shortened Link: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
-        } else {
-          resultDiv.innerHTML = `❌ Error: ${shortUrl}`;
-        }
-      } catch (error) {
-        console.error(error);
-        resultDiv.innerHTML = "❌ Failed to shorten the link. Please try again.";
-      }
-    }
-  </script>
-</body>
-</html>
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+<dict>
+  <key>items</key>
+  <array>
+    <dict>
+      <key>assets</key>
+      <array>
+        <dict>
+          <key>kind</key>
+          <string>software-package</string>
+          <key>url</key>
+          <string>YOUR-DIRECT-IPA-LINK-HERE</string>
+        </dict>
+      </array>
+      <key>metadata</key>
+      <dict>
+        <key>bundle-identifier</key>
+        <string>YOUR.BUNDLE.ID</string>
+        <key>bundle-version</key>
+        <string>1.0.1</string>
+        <key>kind</key>
+        <string>software</string>
+        <key>title</key>
+        <string>Your App Name</string>
+      </dict>
+    </dict>
+  </array>
+</dict>
+</plist>
