@@ -2,44 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Links Page</title>
+  <title>Link Buttons</title>
   <style>
     body {
+      margin: 0;
       background-color: #0d0d0d;
       font-family: Arial, sans-serif;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
-      margin: 0;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .glow-button {
       background-color: #00bfff;
-      border: none;
-      border-radius: 10px;
-      padding: 15px 30px;
-      margin: 10px;
-      font-size: 18px;
       color: white;
-      cursor: pointer;
-      box-shadow: 0 0 15px #00bfff, 0 0 30px #00bfff;
-      transition: transform 0.2s;
+      font-weight: bold;
+      font-size: 16px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 12px;
       text-decoration: none;
+      text-align: center;
+      box-shadow: 0 0 12px #00bfff, 0 0 25px #00bfff;
+      transition: transform 0.2s ease;
+      min-width: 140px;
     }
 
     .glow-button:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 25px #00bfff, 0 0 50px #00bfff;
+      box-shadow: 0 0 18px #00bfff, 0 0 36px #00bfff;
+    }
+
+    /* Stack buttons into two rows if needed */
+    @media (max-width: 400px) {
+      .button-container {
+        flex-direction: column;
+        gap: 15px;
+      }
     }
   </style>
 </head>
 <body>
-
-  <a class="glow-button" href="https://t.me/khoindvn" target="_blank">My Telegram</a>
-  <a class="glow-button" href="https://deltaios-executor.com/Signed.ipa" target="_blank">Delta iOS - Signed</a>
-  <a class="glow-button" href="https://krnl-ios.com/Signed.ipa" target="_blank">Krnl iOS - Signed</a>
-
+  <div class="button-container">
+    <a class="glow-button" href="https://t.me/khoindvn" target="_blank">my telegram</a>
+    <a class="glow-button" href="https://deltaios-executor.com/Signed.ipa" target="_blank">delta ios - signed</a>
+    <a class="glow-button" href="https://krnl-ios.com/Signed.ipa" target="_blank">krnl ios - signed</a>
+  </div>
 </body>
 </html>
