@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Link Buttons</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glowing Buttons</title>
   <style>
     body {
       margin: 0;
@@ -14,48 +15,66 @@
       height: 100vh;
     }
 
-    .button-container {
+    .container {
+      text-align: center;
       display: flex;
       flex-direction: row;
-      gap: 20px;
       flex-wrap: wrap;
+      gap: 20px;
       justify-content: center;
     }
 
     .glow-button {
-      background-color: #00bfff;
+      background-color: #00aaff;
       color: white;
-      font-weight: bold;
-      font-size: 16px;
-      padding: 12px 25px;
-      border: none;
+      padding: 15px 25px;
       border-radius: 12px;
-      text-decoration: none;
+      font-size: 16px;
+      font-weight: bold;
+      box-shadow: 0 0 20px #00aaff;
+      border: none;
+      cursor: default;
       text-align: center;
-      box-shadow: 0 0 12px #00bfff, 0 0 25px #00bfff;
-      transition: transform 0.2s ease;
-      min-width: 140px;
+      width: 200px;
     }
 
-    .glow-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 18px #00bfff, 0 0 36px #00bfff;
+    .link-text {
+      display: block;
+      word-break: break-all;
+      font-size: 14px;
+      color: #ccefff;
+      margin-top: 8px;
+      font-weight: normal;
     }
 
-    /* Stack buttons into two rows if needed */
-    @media (max-width: 400px) {
-      .button-container {
+    @media (max-width: 768px) {
+      .container {
         flex-direction: column;
         gap: 15px;
+      }
+
+      .glow-button {
+        width: 90%;
+        max-width: 300px;
+        font-size: 15px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="button-container">
-    <a class="glow-button" href="https://t.me/khoindvn" target="_blank">my telegram</a>
-    <a class="glow-button" href="https://deltaios-executor.com/Signed.ipa" target="_blank">delta ios - signed</a>
-    <a class="glow-button" href="https://krnl-ios.com/Signed.ipa" target="_blank">krnl ios - signed</a>
+  <div class="container">
+    <div class="glow-button">
+      My Telegram
+      <span class="link-text">https://t.me/khoindvn</span>
+    </div>
+    <div class="glow-button">
+      Delta iOS - Signed
+      <span class="link-text">https://deltaios-executor.com/Signed.ipa</span>
+    </div>
+    <div class="glow-button">
+      Krnl iOS - Signed
+      <span class="link-text">https://krnl-ios.com/Signed.ipa</span>
+    </div>
   </div>
 </body>
 </html>
