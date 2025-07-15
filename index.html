@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Glowing Buttons</title>
+  <title>Glowing Buttons with Links</title>
   <style>
     body {
       margin: 0;
@@ -16,35 +16,28 @@
     }
 
     .container {
-      text-align: center;
       display: flex;
-      flex-direction: row;
       flex-wrap: wrap;
       gap: 20px;
       justify-content: center;
     }
 
     .glow-button {
+      display: inline-block;
       background-color: #00aaff;
       color: white;
       padding: 15px 25px;
       border-radius: 12px;
       font-size: 16px;
       font-weight: bold;
+      text-decoration: none;
       box-shadow: 0 0 20px #00aaff;
-      border: none;
-      cursor: default;
       text-align: center;
-      width: 200px;
+      transition: transform 0.2s ease;
     }
 
-    .link-text {
-      display: block;
-      word-break: break-all;
-      font-size: 14px;
-      color: #ccefff;
-      margin-top: 8px;
-      font-weight: normal;
+    .glow-button:hover {
+      transform: scale(1.05);
     }
 
     @media (max-width: 768px) {
@@ -63,18 +56,9 @@
 </head>
 <body>
   <div class="container">
-    <div class="glow-button">
-      My Telegram
-      <span class="link-text">https://t.me/khoindvn</span>
-    </div>
-    <div class="glow-button">
-      Delta iOS - Signed
-      <span class="link-text">https://deltaios-executor.com/Signed.ipa</span>
-    </div>
-    <div class="glow-button">
-      Krnl iOS - Signed
-      <span class="link-text">https://krnl-ios.com/Signed.ipa</span>
-    </div>
+    <a class="glow-button" href="https://t.me/khoindvn" target="_blank">My Telegram</a>
+    <a class="glow-button" href="https://deltaios-executor.com/Signed.ipa" target="_blank">Delta iOS - Signed</a>
+    <a class="glow-button" href="https://krnl-ios.com/Signed.ipa" target="_blank">Krnl iOS - Signed</a>
   </div>
 </body>
 </html>
