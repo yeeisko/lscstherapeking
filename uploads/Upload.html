@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Upload to LSCS3</title>
+</head>
+<body>
+  <h1>Upload File</h1>
+
+  <form id="uploadForm">
+    <input type="file" name="file" required />
+    <button type="submit">Upload</button>
+  </form>
+
+  <div id="response"></div>
+
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const form = e.target;
+      const fileInput = form.querySelector('input[type="file"]');
+      const file = fileInput.files[0];
+
+      if (!file) return alert("No file selected.");
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('https://api.snsign.pro/lscs3-upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await res.json();
+        document.getElementById('response').textContent = res.ok
+          ? ✅ Uploaded: ${data.file.url}
+          : ❌ Error: ${data.error || 'Unknown error'};
+      } catch (err) {
+        document.getElementById('response').textContent = ❌ Failed: ${err.message};
+      }
+    });
+  </script>
+</body>
+</html>
