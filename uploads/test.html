@@ -1,46 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Upload to LSCS3</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>File Upload to snsign.pro</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 2em;
+  }
+  #uploadForm {
+    margin-bottom: 1em;
+  }
+  #result {
+    margin-top: 1em;
+  }
+  #loading {
+    display: none;
+    color: blue;
+  }
+  #error {
+    color: red;
+  }
+</style>
 </head>
 <body>
-  <h1>Upload File</h1>
 
-  <form id="uploadForm">
-    <input type="file" name="file" required />
-    <button type="submit">Upload</button>
-  </form>
+<h1>Upload File to snsign.pro</h1>
 
-  <div id="response"></div>
+<form id="uploadForm">
+  <input type="file" id="fileInput" required />
+  <button type="submit">Upload</button>
+</form>
 
-  <script>
-    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
+<div id="loading">Uploading...</div>
+<div id="result"></div>
+<div id="error"></div>
 
-      const form = e.target;
-      const fileInput = form.querySelector('input[type="file"]');
-      const file = fileInput.files[0];
+<script>
+document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-      if (!file) return alert("No file selected.");
+  const fileInput = document.getElementById('fileInput');
+  const resultDiv = document.getElementById('result');
+  const errorDiv = document.getElementById('error');
+  const loadingDiv = document.getElementById('loading');
 
-      const formData = new FormData();
-      formData.append('file', file);
+  resultDiv.textContent = '';
+  errorDiv.textContent = '';
+  
+  if (fileInput.files.length === 0) {
+    errorDiv.textContent = 'Please select a file.';
+    return;
+  }
 
-      try {
-        const res = await fetch('https://api.snsign.pro/lscs3-upload', {
-          method: 'POST',
-          body: formData,
-        });
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append('file', file);
 
-        const data = await res.json();
-        document.getElementById('response').textContent = res.ok
-          ? ✅ Uploaded: ${data.file.url}
-          : ❌ Error: ${data.error || 'Unknown error'};
-      } catch (err) {
-        document.getElementById('response').textContent = ❌ Failed: ${err.message};
-      }
+  loadingDiv.style.display = 'block';
+
+  try {
+    const response = await fetch('https://api.snsign.pro/lscs3-upload', {
+      method: 'POST',
+      body: formData
     });
-  </script>
+
+    if (!response.ok) {
+      throw new Error(Server responded with ${response.status});
+    }
+
+    const data = await response.json();
+
+    // Assuming the response contains a field with the download URL.
+    // Adjust this according to actual API response structure.
+    // Example:
+    // { "url": "https://somehost.com/download/abc123" }
+
+    if (data.url) {
+      resultDiv.innerHTML = File uploaded successfully! Download link: <a href="${data.url}" target="_blank">${data.url}</a>;
+    } else {
+      throw new Error('Download URL not found in response.');
+    }
+    
+  } catch (err) {
+    errorDiv.textContent = 'Upload failed: ' + err.message;
+  } finally {
+    loadingDiv.style.display = 'none';
+  }
+});
+</script>
+
 </body>
 </html>
